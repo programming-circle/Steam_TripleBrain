@@ -1,0 +1,6 @@
+@Steam_TripleBrain_HostAddress = http://localhost:5177
+
+GET {{Steam_TripleBrain_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
