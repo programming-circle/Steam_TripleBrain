@@ -2,16 +2,18 @@
 using Microsoft.EntityFrameworkCore;
 using Steam_TripleBrain.CQRS.Command.Game;
 using Steam_TripleBrain.Data;
+using Steam_TripleBrain.MappingProfiles;
 using Steam_TripleBrain.Models;
 using Steam_TripleBrain.Profiles;
 
 namespace Steam_TripleBrain.CQRS.Handler.Game
 {
-    public class CreateGameHandler : IRequestHandler<GetGameByIdCommand, Result<GameViewProfile>>
+    public class CreateGameHandler : IRequestHandler<CreateGameCommand, Result<GameViewProfile>>
     {
         //Adding DB and logger
         private readonly AppDbContext _context;
         private readonly ILogger<CreateGameHandler> _logger;
+        
 
         public CreateGameHandler(AppDbContext context, ILogger<CreateGameHandler> logger)
         {
@@ -19,7 +21,7 @@ namespace Steam_TripleBrain.CQRS.Handler.Game
             _logger = logger;
         }
 
-        public async Task<Result<GameViewProfile>> Handle(GetGameByIdCommand request, CancellationToken cancellationToken)
+        public async Task<Result<GameViewProfile>> Handle(CreateGameCommand request, CancellationToken cancellationToken)
         {
             //Check if game with the same ID already exists
             _logger.LogInformation("Handling CreateGameCommand for game with ID {GameId}", request.Id);
@@ -33,6 +35,7 @@ namespace Steam_TripleBrain.CQRS.Handler.Game
             }
 
             //I hate Mapper, so I'll do it manually
+            /*
             var game = new Models.Game()
             {
                 Id = request.Id,
@@ -47,26 +50,32 @@ namespace Steam_TripleBrain.CQRS.Handler.Game
                 Discount = request.Discount,
                 Author = request.Author,
                 DLCs = request.DLCs
-            };
+            };*/
+
+            //Possibly could work, need to be tested.
+            var game = GameMappingProfile.ToGame(request);
 
             _context.Games.Add(game);
             await _context.SaveChangesAsync(cancellationToken);
             
-            var gameViewProfile = new GameViewProfile()
-            {
-                Id = game.Id,
-                Name = game.Name,
-                Poster = game.Poster,
-                Images = game.Images,
-                Rating = game.Rating,
-                Description = game.Description,
-                Genres = game.Genres,
-                Tags = game.Tags,
-                Price = game.Price,
-                Discount = game.Discount,
-                Author = game.Author,
-                DLCs = game.DLCs
-            };
+            //var gameViewProfile = new GameViewProfile()
+            //{
+            //    Id = game.Id,
+            //    Name = game.Name,
+            //    Poster = game.Poster,
+            //    Images = game.Images,
+            //    Rating = game.Rating,
+            //    Description = game.Description,
+            //    Genres = game.Genres,
+            //    Tags = game.Tags,
+            //    Price = game.Price,
+            //    Discount = game.Discount,
+            //    Author = game.Author,
+            //    DLCs = game.DLCs
+            //};
+
+            var gameViewProfile = GameMappingProfile.ToProfile(game);
+
             return Result<GameViewProfile>.Success(gameViewProfile, "Game created successfully.");
         }
     }

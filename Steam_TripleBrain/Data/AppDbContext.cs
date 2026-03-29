@@ -25,6 +25,8 @@ namespace Steam_TripleBrain.Data
         public DbSet<Genre> Genres => Set<Genre>();
         //Tag
         public DbSet<Tag> Tags => Set<Tag>();
+        //ImageUrl
+        public DbSet<ImageUrl> ImageUrls => Set<ImageUrl>();
         //WishList
         public DbSet<WishList> WishLists => Set<WishList>();
         //FriendShip

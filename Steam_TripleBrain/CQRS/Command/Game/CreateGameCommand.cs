@@ -7,19 +7,19 @@ namespace Steam_TripleBrain.CQRS.Command.Game
 {
     public class CreateGameCommand : IRequest<Result<GameViewProfile>>
     {
-
+        public Guid Id { get; set; }
         public string Name { get; set; }
 
-        public IFormFile Poster { get; set; }
+        public ImageUrlViewProfile Poster { get; set; }
 
-        public IFormFile Images { get; set; }
+        public List<ImageUrlViewProfile>? Images { get; set; }
 
         public double Rating { get; set; }
 
         public string Description { get; set; }
-        public List<Genre> Genres { get; set; }
+        public List<GenreViewProfile> Genres { get; set; }
 
-        public List<Tag>? Tags { get; set; }
+        public List<TagViewProfile>? Tags { get; set; }
 
         public decimal Price { get; set; }
 
@@ -27,10 +27,10 @@ namespace Steam_TripleBrain.CQRS.Command.Game
 
         public Guid Author { get; set; }
 
-        public List<DLC>? DLCs { get; set; }
+        public List<DLCViewProfile>? DLCs { get; set; }
     }
 
-    public class CreateGameValidator : AbstractValidator<GetGameByIdCommand>
+    public class CreateGameValidator : AbstractValidator<CreateGameCommand>
     {
         //Section for validation rules
         public CreateGameValidator() { 

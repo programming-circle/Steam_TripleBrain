@@ -6,9 +6,9 @@
 
         public string Name { get; set; }
 
-        public IFormFile Poster { get; set; }
+        public ImageUrl Poster { get; set; }
 
-        public IFormFile? Images { get; set; }
+        public List<ImageUrl>? Images { get; set; }
 
         public double Rating { get; set; }
 
@@ -24,5 +24,6 @@
         public Guid Author { get; set; }
 
         public List<DLC>? DLCs { get; set; }
+        //public object GameMappintProfile { get; internal set; }
     }
 }

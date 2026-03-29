@@ -8,7 +8,7 @@
         public string Email { get; set; }
         public string Password { get; set; }
 
-        public IFormFile? Icon { get; set; }
+        public ImageUrl? Icon { get; set; }
 
         public DateTime DateOfReg {  get; set; }
 

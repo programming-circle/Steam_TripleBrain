@@ -10,7 +10,7 @@ namespace Steam_TripleBrain.Profiles
         public string Email { get; set; }
         public string Password { get; set; }
 
-        public IFormFile Icon { get; set; }
+        public ImageUrlViewProfile? Icon { get; set; }
 
         public DateTime DateOfReg { get; set; }
 
