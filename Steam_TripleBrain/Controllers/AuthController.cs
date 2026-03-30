@@ -18,7 +18,7 @@ namespace Steam_TripleBrain.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] Profiles profile)
+        public async Task<IActionResult> Register([FromBody] ProfilesAcc profile)
         {
             var result = await _authService.RegisterAsync(profile); // Виклик методу реєстрації з сервісу
             if (!result)

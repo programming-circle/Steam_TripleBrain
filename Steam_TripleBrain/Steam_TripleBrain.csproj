@@ -14,11 +14,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="CQRS\Query\AuthQuery\GetProfileQuery.cs" />
+    <Compile Include="CQRS\Query\AuthQuery\GetTokenLogsQuery.cs" />
     <Compile Include="CQRS\Query\Game\GetAllGamesQueryRequest.cs" />
     <Compile Include="CQRS\Query\Game\GetGameByIdQueryRequest.cs" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="BCrypt.Net-Next" Version="4.1.0" />
     <PackageReference Include="FluentValidation" Version="12.1.1" />
     <PackageReference Include="MediatR" Version="14.1.0" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />

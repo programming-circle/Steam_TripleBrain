@@ -16,7 +16,7 @@ namespace Steam_TripleBrain.Services
             _tokenService = tokenService;
         }
 
-        public async Task<bool> RegisterAsync(Profiles profile)
+        public async Task<bool> RegisterAsync(ProfilesAcc profile)
         {
             // Ensure we have a plain password to hash. Accept `Password` from incoming requests
             var plain = profile.Password ?? profile.PasswordHash;

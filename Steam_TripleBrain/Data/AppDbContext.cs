@@ -7,11 +7,11 @@ namespace Steam_TripleBrain.Data
     public class AppDbContext : DbContext //Possibly if needed you can add an IdentityDbContext for user management
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
-            // Таблиця користувачів
-            public DbSet<Profiles> Profiles { get; set; }
+        // Таблиця користувачів
+        public DbSet<ProfilesAcc> Profiles { get; set; }
 
-            // Таблиця журналу токенів
-            public DbSet<TokenLogs> TokenLogs { get; set; }
+        // Таблиця журналу токенів
+        public DbSet<TokenLogs> TokenLogs { get; set; }
         //Game
         public DbSet<Game> Games => Set<Game>();
         //DLC
@@ -44,7 +44,7 @@ namespace Steam_TripleBrain.Data
             // Configure your entities and relationships here
 
             // Налаштування для Profile
-            modelBuilder.Entity<Profiles>(entity =>                            
+            modelBuilder.Entity<ProfilesAcc>(entity =>                            
             {
                 entity.HasKey(p => p.Id);                                       // Встановлюємо Id як первинний ключ
                 entity.Property(p => p.Username).IsRequired().HasMaxLength(100);// Встановлюємо Username як обов'язкове поле з максимальною довжиною 100 символів

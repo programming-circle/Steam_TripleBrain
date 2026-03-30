@@ -11,13 +11,13 @@ namespace Steam_TripleBrain.Repositories
         private readonly AppDbContext _context;
         public UserRepository(AppDbContext context) => _context = context;
 
-        public async Task AddAsync(Profiles profile)
+        public async Task AddAsync(ProfilesAcc profile)
         {
             _context.Profiles.Add(profile);                             // Додаємо новий профіль до контексту
             await _context.SaveChangesAsync();
         }
 
-        public async Task<Profiles> GetByUsernameAsync(string username)
+        public async Task<ProfilesAcc> GetByUsernameAsync(string username)
         {
             if (string.IsNullOrWhiteSpace(username))
                 return null;                                            // Якщо ім'я користувача порожнє або null, повертаємо null
@@ -38,7 +38,7 @@ namespace Steam_TripleBrain.Repositories
             return true;
         }
 
-        public async Task<IEnumerable<Profiles>> GetAllAsync()
+        public async Task<IEnumerable<ProfilesAcc>> GetAllAsync()
         {
             return await _context.Profiles.ToListAsync();                                        // Повертаємо всі профілі у вигляді списку
         }

@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Steam_TripleBrain.CQRS.Query;
+using Steam_TripleBrain.CQRS.Query.AuthQuery;
 using Steam_TripleBrain.Models;
 using Steam_TripleBrain.Repositories.Interface;
 

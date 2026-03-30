@@ -3,11 +3,8 @@ using Microsoft.EntityFrameworkCore.Scaffolding.Metadata;
 using Serilog;
 using Steam_TripleBrain.Data;
 using System.Threading.RateLimiting;
-
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Steam_TripleBrain.Data;
 using Steam_TripleBrain.Repositories;
 using Steam_TripleBrain.Repositories.Interface;
 using Steam_TripleBrain.Services;
