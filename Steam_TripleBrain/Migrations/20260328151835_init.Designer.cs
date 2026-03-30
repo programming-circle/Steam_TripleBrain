@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Steam_TripleBrain.Data;
 
@@ -11,9 +12,11 @@ using Steam_TripleBrain.Data;
 namespace Steam_TripleBrain.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260328151835_init")]
+    partial class init
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,27 +25,19 @@ namespace Steam_TripleBrain.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Steam_TripleBrain.Models.Profiles", b =>
             modelBuilder.Entity("Steam_TripleBrain.Models.DLC", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Email")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("FullName")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
                     b.Property<int>("Discount")
                         .HasColumnType("int");
 
-                    b.Property<string>("PasswordHash")
                     b.Property<Guid>("GameId")
                         .HasColumnType("uniqueidentifier");
 
@@ -50,7 +45,6 @@ namespace Steam_TripleBrain.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Role")
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
@@ -73,11 +67,8 @@ namespace Steam_TripleBrain.Migrations
 
                     b.Property<string>("Status")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Username")
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
@@ -95,8 +86,6 @@ namespace Steam_TripleBrain.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Discount")
@@ -120,7 +109,6 @@ namespace Steam_TripleBrain.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Profiles");
                     b.HasIndex("PosterId");
 
                     b.HasIndex("UserId");
@@ -128,14 +116,12 @@ namespace Steam_TripleBrain.Migrations
                     b.ToTable("Games");
                 });
 
-            modelBuilder.Entity("Steam_TripleBrain.Models.TokenLogs", b =>
             modelBuilder.Entity("Steam_TripleBrain.Models.Genre", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("ExpiredAt")
                     b.Property<Guid?>("GameId")
                         .HasColumnType("uniqueidentifier");
 
@@ -179,7 +165,6 @@ namespace Steam_TripleBrain.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsRevoked")
                     b.Property<decimal>("TotalPrice")
                         .HasColumnType("decimal(18,2)");
 
@@ -195,11 +180,8 @@ namespace Steam_TripleBrain.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("IssuedAt")
                     b.Property<Guid?>("DLCId")
                         .HasColumnType("uniqueidentifier");
 
@@ -274,7 +256,6 @@ namespace Steam_TripleBrain.Migrations
                     b.Property<DateTime>("DateOfReg")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Token")
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -286,16 +267,12 @@ namespace Steam_TripleBrain.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Username")
                     b.Property<string>("UserName")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("TokenLogs");
                     b.HasIndex("IconId");
 
                     b.ToTable("Users");
