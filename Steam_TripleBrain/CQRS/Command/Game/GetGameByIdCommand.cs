@@ -42,23 +42,23 @@ namespace Steam_TripleBrain.CQRS.Command.Game
 
         public List<DLCViewProfile>? DLCs { get; set; }
 
-        public async Task<Result<GameViewProfile>> HandleById(Guid requestId, CancellationToken cancellationToken)
-        {
-            _logger.LogInformation("Start working of command GetGameById");
-            var exists = await _context.Games.AnyAsync(x => x.Id == requestId, cancellationToken);
+        //public async Task<Result<GameViewProfile>> HandleById(Guid requestId, CancellationToken cancellationToken)
+        //{
+        //    _logger.LogInformation("Start working of command GetGameById");
+        //    var exists = await _context.Games.AnyAsync(x => x.Id == requestId, cancellationToken);
 
-            if (!exists)
-            {
-                _logger.LogInformation("item {exists} don't exists in DB ", exists);
-                return Result<GameViewProfile>.Failure("Product with this Id don't exists");
-            }
+        //    if (!exists)
+        //    {
+        //        _logger.LogInformation("item {exists} don't exists in DB ", exists);
+        //        return Result<GameViewProfile>.Failure("Product with this Id don't exists");
+        //    }
 
-            var game = await _context.Games.FindAsync(exists, cancellationToken);
+        //    var game = await _context.Games.FindAsync(exists, cancellationToken);
 
-            var result = GameMappingProfile.ToProfile(game); // Again using my own mapper alternative system
+        //    var result = GameMappingProfile.ToProfile(game); // Again using my own mapper alternative system
 
-            return Result<GameViewProfile>.Success(result, "Product successfully found");
-        }
+        //    return Result<GameViewProfile>.Success(result, "Product successfully found");
+        //}
 
     }
 

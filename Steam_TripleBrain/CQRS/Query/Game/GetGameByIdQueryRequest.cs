@@ -7,7 +7,7 @@ namespace Steam_TripleBrain.CQRS.Query.Game
 {
     public class GetGameByIdQueryRequest : IRequest<Result<GameViewProfile>>
     {
-        public string gameId { get; set; }
+        public Guid gameId { get; set; }
 
     }
 

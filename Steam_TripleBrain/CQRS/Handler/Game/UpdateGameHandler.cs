@@ -9,18 +9,20 @@ namespace Steam_TripleBrain.CQRS.Handler.Game
 {
     public class UpdateGameHandler : IRequestHandler<UpdateGameCommand, Result<GameViewProfile>>
     {
-        private readonly AppDbContext _appDbContext;
+        private readonly AppDbContext _context;
         private readonly ILogger<UpdateGameHandler> _logger;
 
         public UpdateGameHandler(AppDbContext appDbContext, ILogger<UpdateGameHandler> logger)
         {
-            _appDbContext = appDbContext;
+            _context = appDbContext;
             _logger = logger;
         }
-        public Task<Result<GameViewProfile>> Handle(UpdateGameCommand request, CancellationToken cancellationToken)
+        public async Task<Result<GameViewProfile>> Handle(UpdateGameCommand request, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Handling UpdateGameCommand for game: {GameName}", request.Name);
-            //var game = new GetGameByIdCommand. ( request.Id , cancellationToken);
+            var exists = await _context.Games.AnyAsync(g => g.Id == request.Id, cancellationToken);
+            _logger.LogInformation("Checking if game with ID {GameId} exists: {Exists}", request.Id, exists);
+            //var game = new GetGameByIdCommand(request.Id, cancellationToken);
             return null;
         }
     }

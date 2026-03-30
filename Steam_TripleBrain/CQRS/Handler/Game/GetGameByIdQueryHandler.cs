@@ -23,8 +23,8 @@ namespace Steam_TripleBrain.CQRS.Handler.Game
         {
             _logger.LogInformation("Start working of command GetGameById");
 
-            Guid gameId = Guid.Parse(request.gameId);
-            Models.Game game = await _context.Games.FindAsync(gameId);
+            //Guid gameId = request.gameId;
+            Models.Game game = await _context.Games.FindAsync(request.gameId);
             if (game == null)
             {
                 _logger.LogInformation("No game with {game.Id} exists",game.Id);
