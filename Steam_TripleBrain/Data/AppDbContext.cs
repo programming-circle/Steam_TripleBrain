@@ -43,18 +43,18 @@ namespace Steam_TripleBrain.Data
             base.OnModelCreating(modelBuilder);
             // Configure your entities and relationships here
 
-            // Налаштування для Profile
+            // Settings for Profile
             modelBuilder.Entity<ProfilesAcc>(entity =>                            
             {
-                entity.HasKey(p => p.Id);                                       // Встановлюємо Id як первинний ключ
-                entity.Property(p => p.Username).IsRequired().HasMaxLength(100);// Встановлюємо Username як обов'язкове поле з максимальною довжиною 100 символів
-                entity.Property(p => p.PasswordHash).IsRequired();              // Встановлюємо PasswordHash як обов'язкове поле
+                entity.HasKey(p => p.Id);                                       // Installing Id like key
+                entity.Property(p => p.Username).IsRequired().HasMaxLength(100);// Installing Username як обов'язкове поле з максимальною довжиною 100 символів
+                entity.Property(p => p.PasswordHash).IsRequired();              // Installing PasswordHash як обов'язкове поле
                 entity.Property(p => p.Role).IsRequired().HasMaxLength(50);     // Встановлюємо Role як обов'язкове поле з максимальною довжиною 50 символів
                 entity.Property(p => p.Email).HasMaxLength(200);                // Встановлюємо Email з максимальною довжиною 200 символів (не обов'язкове поле)
                 entity.Property(p => p.FullName).HasMaxLength(200);             // Встановлюємо FullName з максимальною довжиною 200 символів (не обов'язкове поле)
             });
 
-            // Налаштування для TokenLog
+            // Settings for TokenLog
             modelBuilder.Entity<TokenLogs>(entity =>                            
             {
                 entity.HasKey(t => t.Id);                                       // Встановлюємо Id як первинний ключ
@@ -62,6 +62,134 @@ namespace Steam_TripleBrain.Data
                 entity.Property(t => t.Token).IsRequired();                     // Встановлюємо Token як обов'язкове поле
                 entity.Property(t => t.IssuedAt).IsRequired();                  // Встановлюємо IssuedAt як обов'язкове поле
                 entity.Property(t => t.IsRevoked).HasDefaultValue(false);       // Встановлюємо IsRevoked з дефолтним значенням false
+            });
+
+            //Game
+            // Game entity configuration
+            modelBuilder.Entity<Game>(entity =>
+            {
+                entity.HasKey(g => g.Id);
+
+                // Poster: Game -> ImageUrl (one-to-one like relationship from Game to ImageUrl via PosterId)
+                entity.HasOne(g => g.Poster)
+                      .WithMany()
+                      .HasForeignKey("PosterId")
+                      .OnDelete(DeleteBehavior.Cascade);
+
+                // Images: Game -> ImageUrl (one-to-many)
+                entity.HasMany(g => g.Images)
+                      .WithOne()
+                      .HasForeignKey("GameId")
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                // Genres: Game -> Genre (one-to-many)
+                entity.HasMany(g => g.Genres)
+                      .WithOne()
+                      .HasForeignKey("GameId")
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                // Tags: Game -> Tag (one-to-many)
+                entity.HasMany(g => g.Tags)
+                      .WithOne()
+                      .HasForeignKey("GameId")
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                // DLCs: Game -> DLC (one-to-many)
+                entity.HasMany(g => g.DLCs)
+                      .WithOne(d => d.Game)
+                      .HasForeignKey("GameId")
+                      .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            // ImageUrl entity configuration
+            modelBuilder.Entity<ImageUrl>(entity =>
+            {
+                entity.HasKey(i => i.Id);
+
+                // ImageUrl may belong to a Game (as part of Images collection)
+                entity.HasOne<Game>()
+                      .WithMany(g => g.Images)
+                      .HasForeignKey("GameId")
+                      .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            // Genre entity configuration
+            modelBuilder.Entity<Genre>(entity =>
+            {
+                entity.HasKey(x => x.Id);
+                entity.HasOne<Game>()
+                      .WithMany(g => g.Genres)
+                      .HasForeignKey("GameId")
+                      .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            // Tag entity configuration
+            modelBuilder.Entity<Tag>(entity =>
+            {
+                entity.HasKey(x => x.Id);
+                entity.HasOne<Game>()
+                      .WithMany(g => g.Tags)
+                      .HasForeignKey("GameId")
+                      .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            // DLC entity configuration
+            modelBuilder.Entity<DLC>(entity =>
+            {
+                entity.HasKey(d => d.Id);
+                entity.HasOne(d => d.Game)
+                      .WithMany(g => g.DLCs)
+                      .HasForeignKey("GameId")
+                      .OnDelete(DeleteBehavior.Cascade);
+
+                // relation to User (User.DLCs)
+                entity.HasOne<User>()
+                      .WithMany(u => u.DLCs)
+                      .HasForeignKey("UserId")
+                      .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            // User entity configuration
+            modelBuilder.Entity<User>(entity =>
+            {
+                entity.HasKey(u => u.Id);
+
+                // User icon (ImageUrl)
+                entity.HasOne(u => u.Icon)
+                      .WithMany()
+                      .HasForeignKey("IconId")
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                // Purchased games
+                entity.HasMany(u => u.PurchasedGames)
+                      .WithOne()
+                      .HasForeignKey("UserId")
+                      .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            // WishList entity configuration
+            modelBuilder.Entity<WishList>(entity =>
+            {
+                entity.HasKey(w => w.Id);
+                entity.HasMany(w => w.WishGames)
+                      .WithOne()
+                      .HasForeignKey("WishListId")
+                      .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            // Order / OrderItem configuration
+            modelBuilder.Entity<Order>(entity =>
+            {
+                entity.HasKey(o => o.Id);
+                entity.HasMany(o => o.Items)
+                      .WithOne()
+                      .HasForeignKey("OrderId")
+                      .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<OrderItem>(entity =>
+            {
+                entity.HasKey(oi => oi.Id);
             });
 
         }

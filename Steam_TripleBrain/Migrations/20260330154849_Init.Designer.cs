@@ -12,8 +12,8 @@ using Steam_TripleBrain.Data;
 namespace Steam_TripleBrain.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260328151835_init")]
-    partial class init
+    [Migration("20260330154849_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -107,11 +107,16 @@ namespace Steam_TripleBrain.Migrations
                     b.Property<Guid?>("UserId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("WishListId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("PosterId");
 
                     b.HasIndex("UserId");
+
+                    b.HasIndex("WishListId");
 
                     b.ToTable("Games");
                 });
@@ -201,6 +206,39 @@ namespace Steam_TripleBrain.Migrations
                     b.ToTable("OrderItems");
                 });
 
+            modelBuilder.Entity("Steam_TripleBrain.Models.ProfilesAcc", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("FullName")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Profiles");
+                });
+
             modelBuilder.Entity("Steam_TripleBrain.Models.Review", b =>
                 {
                     b.Property<Guid>("Id")
@@ -247,6 +285,37 @@ namespace Steam_TripleBrain.Migrations
                     b.ToTable("Tags");
                 });
 
+            modelBuilder.Entity("Steam_TripleBrain.Models.TokenLogs", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("ExpiredAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsRevoked")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<DateTime>("IssuedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TokenLogs");
+                });
+
             modelBuilder.Entity("Steam_TripleBrain.Models.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -257,18 +326,15 @@ namespace Steam_TripleBrain.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid?>("IconId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Password")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -280,8 +346,14 @@ namespace Steam_TripleBrain.Migrations
 
             modelBuilder.Entity("Steam_TripleBrain.Models.WishList", b =>
                 {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
 
                     b.ToTable("WishLists");
                 });
@@ -312,6 +384,10 @@ namespace Steam_TripleBrain.Migrations
                     b.HasOne("Steam_TripleBrain.Models.User", null)
                         .WithMany("PurchasedGames")
                         .HasForeignKey("UserId");
+
+                    b.HasOne("Steam_TripleBrain.Models.WishList", null)
+                        .WithMany("WishGames")
+                        .HasForeignKey("WishListId");
 
                     b.Navigation("Poster");
                 });
@@ -376,6 +452,11 @@ namespace Steam_TripleBrain.Migrations
                     b.Navigation("DLCs");
 
                     b.Navigation("PurchasedGames");
+                });
+
+            modelBuilder.Entity("Steam_TripleBrain.Models.WishList", b =>
+                {
+                    b.Navigation("WishGames");
                 });
 #pragma warning restore 612, 618
         }

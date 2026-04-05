@@ -15,6 +15,28 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("MyAllowSpecificOrigins",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:3000") // Address for FrontEnd
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
+});
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("FrontEnd", police =>
+    {
+        police.WithOrigins("http://192.168.0.123:3000") // Address for FrontEnd of other device
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
+
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
@@ -91,8 +113,10 @@ builder.Services.AddScoped<ITokenLogRepository, TokenLogRepository>();  // Ре�
 builder.Services.AddScoped<IAuthService, AuthService>();                // Реєструємо AuthService для інтерфейсу IAuthService
 builder.Services.AddScoped<ITokenService, TokenService>();              // Реєструємо TokenService для інтерфейсу ITokenService
 
-var app = builder.Build();
 
+
+var app = builder.Build();
+app.UseCors("MyAllowSpecificOrigins");
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

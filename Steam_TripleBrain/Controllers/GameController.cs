@@ -15,7 +15,6 @@ namespace Steam_TripleBrain.Controllers
         private readonly IMediator _mediatr;
         private readonly AppDbContext _context;
         private readonly ILogger<GameController> _logger;
-        private readonly CancellationToken _cancellationToken;
 
         public GameController(IMediator mediatr, AppDbContext context, ILogger<GameController> logger)
         {
@@ -33,6 +32,18 @@ namespace Steam_TripleBrain.Controllers
         public async Task<IActionResult> GetById([FromBody] GetGameByIdQueryRequest request)
         {
             var result = await _mediatr.Send(request);
+
+            if (!result.IsSuccess)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
+        }
+
+        [HttpGet("get-all-games")]
+        public async Task<IActionResult> GetAllGames()
+        {
+            var result = await _mediatr.Send(new GetAllGamesQueryRequest(), HttpContext.RequestAborted);
 
             if (!result.IsSuccess)
             {
