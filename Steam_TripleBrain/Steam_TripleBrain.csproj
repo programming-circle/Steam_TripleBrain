@@ -16,9 +16,22 @@
 	<ItemGroup>
 		<Compile Include="CQRS\Query\AuthQuery\GetProfileQuery.cs" />
 		<Compile Include="CQRS\Query\AuthQuery\GetTokenLogsQuery.cs" />
+		<Compile Include="CQRS\Query\DLCs\GetAllDLCsQuery.cs" />
+		<Compile Include="CQRS\Query\DLCs\GetDLCByIdQuery.cs" />
 		<Compile Include="CQRS\Query\Game\DeleteGameByIdQueryRequest.cs" />
 		<Compile Include="CQRS\Query\Game\GetAllGamesQueryRequest.cs" />
 		<Compile Include="CQRS\Query\Game\GetGameByIdQueryRequest.cs" />
+		<Compile Include="CQRS\Query\Genres\GetAllGenresQuery.cs" />
+		<Compile Include="CQRS\Query\Genres\GetGenreByIdQuery.cs" />
+		<Compile Include="CQRS\Query\ImageUrls\GetAllImageUrlsQuery.cs" />
+		<Compile Include="CQRS\Query\ImageUrls\GetImageUrlByIdQuery.cs" />
+		<Compile Include="CQRS\Query\Orders\GetAllOrdersQuery.cs" />
+		<Compile Include="CQRS\Query\Orders\GetOrderByIdQuery.cs" />
+		<Compile Include="CQRS\Query\Reviews\GetAllReviewsQuery.cs" />
+		<Compile Include="CQRS\Query\Reviews\GetReviewByIdQuery.cs" />
+		<Compile Include="CQRS\Query\Tags\GetAllTagsQuery.cs" />
+		<Compile Include="CQRS\Query\Tags\GetTagByIdQuery.cs" />
+		<Compile Include="CQRS\Query\WishLists\GetAllWishListsQuery.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
