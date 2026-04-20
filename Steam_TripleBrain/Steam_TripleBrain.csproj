@@ -7,10 +7,40 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<Compile Remove="CQRS\Command\DLCs\**" />
+		<Compile Remove="CQRS\Command\Reviews\**" />
+		<Compile Remove="CQRS\Command\Tags\**" />
+		<Compile Remove="CQRS\Handler\DLCs\**" />
+		<Compile Remove="CQRS\Handler\Reviews\**" />
+		<Compile Remove="CQRS\Handler\Tags\**" />
 		<Compile Remove="CQRS\Query\**" />
+		<Content Remove="CQRS\Command\DLCs\**" />
+		<Content Remove="CQRS\Command\Reviews\**" />
+		<Content Remove="CQRS\Command\Tags\**" />
+		<Content Remove="CQRS\Handler\DLCs\**" />
+		<Content Remove="CQRS\Handler\Reviews\**" />
+		<Content Remove="CQRS\Handler\Tags\**" />
 		<Content Remove="CQRS\Query\**" />
+		<EmbeddedResource Remove="CQRS\Command\DLCs\**" />
+		<EmbeddedResource Remove="CQRS\Command\Reviews\**" />
+		<EmbeddedResource Remove="CQRS\Command\Tags\**" />
+		<EmbeddedResource Remove="CQRS\Handler\DLCs\**" />
+		<EmbeddedResource Remove="CQRS\Handler\Reviews\**" />
+		<EmbeddedResource Remove="CQRS\Handler\Tags\**" />
 		<EmbeddedResource Remove="CQRS\Query\**" />
+		<None Remove="CQRS\Command\DLCs\**" />
+		<None Remove="CQRS\Command\Reviews\**" />
+		<None Remove="CQRS\Command\Tags\**" />
+		<None Remove="CQRS\Handler\DLCs\**" />
+		<None Remove="CQRS\Handler\Reviews\**" />
+		<None Remove="CQRS\Handler\Tags\**" />
 		<None Remove="CQRS\Query\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Remove="Controllers\DLCController.cs" />
+	  <Compile Remove="Controllers\ReviewController.cs" />
+	  <Compile Remove="Controllers\TagController.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -70,6 +100,12 @@
 		<Folder Include="Models\AuthData\" />
 		<Folder Include="Services\" />
 		<Folder Include="Profiles\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="Controllers\DLCController.cs" />
+	  <None Include="Controllers\ReviewController.cs" />
+	  <None Include="Controllers\TagController.cs" />
 	</ItemGroup>
 
 </Project>

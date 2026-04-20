@@ -4,7 +4,7 @@ using Steam_TripleBrain.CQRS.Query.AuthQuery;
 using Steam_TripleBrain.Models;
 using Steam_TripleBrain.Repositories.Interface;
 
-namespace Steam_TripleBrain.CQRS.Handler
+namespace Steam_TripleBrain.CQRS.Handler.Auth
 {
     public class GetTokenLogsHandler : IRequestHandler<GetTokenLogsQuery, IEnumerable<TokenLogs>>
     {

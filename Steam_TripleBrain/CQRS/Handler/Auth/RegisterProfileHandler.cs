@@ -1,8 +1,8 @@
 ﻿using MediatR;
-using Steam_TripleBrain.CQRS.Command;
+using Steam_TripleBrain.CQRS.Command.Auth;
 using Steam_TripleBrain.Services.Interface;
 
-namespace Steam_TripleBrain.CQRS.Handler
+namespace Steam_TripleBrain.CQRS.Handler.Auth
 {
     public class RegisterProfileHandler : IRequestHandler<RegisterProfileCommand, bool>
     {

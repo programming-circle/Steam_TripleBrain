@@ -23,6 +23,7 @@ namespace Steam_TripleBrain.Profiles
         public int Discount { get; set; }
 
         public Guid Author { get; set; }
+        public DateTime CreatedAt { get; set; }
 
         public List<DLCViewProfile>? DLCs { get; set; }
     }

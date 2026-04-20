@@ -28,6 +28,9 @@ namespace Steam_TripleBrain.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -80,6 +83,9 @@ namespace Steam_TripleBrain.Migrations
 
                     b.Property<Guid>("Author")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -365,7 +371,8 @@ namespace Steam_TripleBrain.Migrations
 
                     b.HasOne("Steam_TripleBrain.Models.User", null)
                         .WithMany("DLCs")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Game");
                 });
@@ -380,11 +387,13 @@ namespace Steam_TripleBrain.Migrations
 
                     b.HasOne("Steam_TripleBrain.Models.User", null)
                         .WithMany("PurchasedGames")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Steam_TripleBrain.Models.WishList", null)
                         .WithMany("WishGames")
-                        .HasForeignKey("WishListId");
+                        .HasForeignKey("WishListId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Poster");
                 });
@@ -393,14 +402,16 @@ namespace Steam_TripleBrain.Migrations
                 {
                     b.HasOne("Steam_TripleBrain.Models.Game", null)
                         .WithMany("Genres")
-                        .HasForeignKey("GameId");
+                        .HasForeignKey("GameId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("Steam_TripleBrain.Models.ImageUrl", b =>
                 {
                     b.HasOne("Steam_TripleBrain.Models.Game", null)
                         .WithMany("Images")
-                        .HasForeignKey("GameId");
+                        .HasForeignKey("GameId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("Steam_TripleBrain.Models.OrderItem", b =>
@@ -416,14 +427,16 @@ namespace Steam_TripleBrain.Migrations
                 {
                     b.HasOne("Steam_TripleBrain.Models.Game", null)
                         .WithMany("Tags")
-                        .HasForeignKey("GameId");
+                        .HasForeignKey("GameId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("Steam_TripleBrain.Models.User", b =>
                 {
                     b.HasOne("Steam_TripleBrain.Models.ImageUrl", "Icon")
                         .WithMany()
-                        .HasForeignKey("IconId");
+                        .HasForeignKey("IconId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Icon");
                 });

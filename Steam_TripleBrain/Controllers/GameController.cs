@@ -41,9 +41,10 @@ namespace Steam_TripleBrain.Controllers
         }
 
         [HttpGet("get-all-games")]
-        public async Task<IActionResult> GetAllGames()
+        public async Task<IActionResult> GetAllGames([FromQuery] GetAllGamesQueryRequest request)
         {
-            var result = await _mediatr.Send(new GetAllGamesQueryRequest(), HttpContext.RequestAborted);
+            // Bind query string parameters into GetAllGamesQueryRequest via [FromQuery]
+            var result = await _mediatr.Send(request ?? new GetAllGamesQueryRequest(), HttpContext.RequestAborted);
 
             if (!result.IsSuccess)
             {

@@ -1,7 +1,7 @@
 using FluentValidation;
 using Steam_TripleBrain.Models;
 
-namespace Steam_TripleBrain.CQRS.Command
+namespace Steam_TripleBrain.CQRS.Command.Auth
 {
     public class RegisterProfileValidator : AbstractValidator<RegisterProfileCommand>
     {

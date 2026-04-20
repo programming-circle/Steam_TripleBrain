@@ -1,6 +1,6 @@
 using FluentValidation;
 
-namespace Steam_TripleBrain.CQRS.Command
+namespace Steam_TripleBrain.CQRS.Command.Auth
 {
     public class LoginProfileValidator : AbstractValidator<LoginProfileCommand>
     {

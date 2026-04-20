@@ -94,6 +94,7 @@ namespace Steam_TripleBrain.MappingProfiles
                 Price = game.Price,
                 Discount = game.Discount,
                 Author = game.Author,
+                CreatedAt = game.CreatedAt,
                 // DLCs: map each DTO to domain DLC; if types match this will copy the list
                 DLCs = game.DLCs?.Select(d => new DLCViewProfile
                 {
@@ -102,6 +103,7 @@ namespace Steam_TripleBrain.MappingProfiles
                     Price = d.Price,
                     Discount = d.Discount,
                     Description = d.Description,
+                    CreatedAt = d.CreatedAt
                 }).ToList()
             };
         }

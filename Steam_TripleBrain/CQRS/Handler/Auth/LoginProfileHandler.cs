@@ -2,7 +2,7 @@
 using Steam_TripleBrain.CQRS.Command;
 using Steam_TripleBrain.Services.Interface;
 
-namespace Steam_TripleBrain.CQRS.Handler
+namespace Steam_TripleBrain.CQRS.Handler.Auth
 {
     public class LoginProfileHandler : IRequestHandler<LoginProfileCommand, string>
     {

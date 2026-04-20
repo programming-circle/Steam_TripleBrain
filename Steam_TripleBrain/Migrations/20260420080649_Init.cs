@@ -127,6 +127,7 @@ namespace Steam_TripleBrain.Migrations
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Discount = table.Column<int>(type: "int", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     GameId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
@@ -147,6 +148,7 @@ namespace Steam_TripleBrain.Migrations
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Discount = table.Column<int>(type: "int", nullable: false),
                     Author = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     WishListId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
@@ -157,7 +159,8 @@ namespace Steam_TripleBrain.Migrations
                         name: "FK_Games_WishLists_WishListId",
                         column: x => x.WishListId,
                         principalTable: "WishLists",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -175,7 +178,8 @@ namespace Steam_TripleBrain.Migrations
                         name: "FK_Genres_Games_GameId",
                         column: x => x.GameId,
                         principalTable: "Games",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -193,7 +197,8 @@ namespace Steam_TripleBrain.Migrations
                         name: "FK_ImageUrls_Games_GameId",
                         column: x => x.GameId,
                         principalTable: "Games",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -211,7 +216,8 @@ namespace Steam_TripleBrain.Migrations
                         name: "FK_Tags_Games_GameId",
                         column: x => x.GameId,
                         principalTable: "Games",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -232,7 +238,8 @@ namespace Steam_TripleBrain.Migrations
                         name: "FK_Users_ImageUrls_IconId",
                         column: x => x.IconId,
                         principalTable: "ImageUrls",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
@@ -298,7 +305,8 @@ namespace Steam_TripleBrain.Migrations
                 table: "DLCs",
                 column: "UserId",
                 principalTable: "Users",
-                principalColumn: "Id");
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Games_ImageUrls_PosterId",
@@ -313,7 +321,8 @@ namespace Steam_TripleBrain.Migrations
                 table: "Games",
                 column: "UserId",
                 principalTable: "Users",
-                principalColumn: "Id");
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
         }
 
         /// <inheritdoc />
