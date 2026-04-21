@@ -1,7 +1,8 @@
 ﻿using BCrypt.Net;
-using Steam_TripleBrain.Models;
+using System.Linq;
+using Microsoft.AspNetCore.Identity;
+using Steam_TripleBrain.Data;
 using Steam_TripleBrain.Repositories.Interface;
-using Steam_TripleBrain.Services.Interface;
 
 namespace Steam_TripleBrain.Services
 {
@@ -9,34 +10,75 @@ namespace Steam_TripleBrain.Services
     {
         private readonly IUserRepository _repo;
         private readonly ITokenService _tokenService;
+        private readonly ILogger<AuthService> _logger;
+        private readonly Microsoft.AspNetCore.Identity.UserManager<AppUser> _userManager;
 
-        public AuthService(IUserRepository repo, ITokenService tokenService)
+        public AuthService(IUserRepository repo, ITokenService tokenService, ILogger<AuthService> logger,
+            Microsoft.AspNetCore.Identity.UserManager<AppUser> userManager)
         {
             _repo = repo;
             _tokenService = tokenService;
+            _logger = logger;
+            _userManager = userManager;
+            _logger.LogInformation("### AuthService start working");
         }
 
-        public async Task<bool> RegisterAsync(ProfilesAcc profile)
+        // Create Identity AppUser from email/password (implements IAuthService)
+        public async Task<bool> RegisterAsync(string email, string password)
         {
-            // Ensure we have a plain password to hash. Accept `Password` from incoming requests
-            var plain = profile.Password ?? profile.PasswordHash;
-            if (string.IsNullOrWhiteSpace(plain))
-                return false; // caller (controller) should return BadRequest
+            _logger.LogInformation("### RegisterAsync start working");
+            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
+            {
+                _logger.LogInformation("### RegisterAsync: missing email or password");
+                return false;
+            }
 
-            profile.PasswordHash = BCrypt.Net.BCrypt.HashPassword(plain);  // Хешуємо пароль перед збереженням
-            profile.Password = null; // Clear plain password so it is not kept in memory/storage
+            var user = new AppUser
+            {
+                Id = Guid.NewGuid(),
+                UserName = email,
+                Email = email
+            };
 
-            await _repo.AddAsync(profile); // Зберігаємо користувача в базі даних
-            return true; // Повертаємо успішну реєстрацію
+            var result = await _userManager.CreateAsync(user, password);
+            if (!result.Succeeded)
+            {
+                _logger.LogInformation("### RegisterAsync: Identity create failed: {errors}", string.Join(',', result.Errors.Select(e => e.Description)));
+                return false;
+            }
+
+            // assign default role
+            await _userManager.AddToRoleAsync(user, "User");
+
+            _logger.LogInformation("### RegisterAsync: user created successfully.");
+
+            // optionally create tokens and persist refresh token if token service does that
+            var access = await _tokenService.CreateAccessTokenAsync(user);
+            var refresh = await _tokenService.CreateRefreshTokenAsync(user);
+
+            return true;
         }
 
         public async Task<string?> LoginAsync(string username, string password)
         {
-            var user = await _repo.GetByUsernameAsync(username); // Отримуємо користувача за ім'ям користувача
-            if (user == null || !BCrypt.Net.BCrypt.Verify(password, user.PasswordHash)) // Перевіряємо, чи існує користувач і чи збігається пароль
-                return null;
+            _logger.LogInformation("### LoginAsync start working");
 
-            return _tokenService.GenerateToken(user); // Генерация JWT токена
+            var user = await _userManager.FindByNameAsync(username) ?? await _userManager.FindByEmailAsync(username);
+            if (user == null)
+            {
+                _logger.LogInformation("### LoginAsync: user not found");
+                return null;
+            }
+
+            var passwordValid = await _userManager.CheckPasswordAsync(user, password);
+            if (!passwordValid)
+            {
+                _logger.LogInformation("### LoginAsync: invalid password");
+                return null;
+            }
+
+            var access = await _tokenService.CreateAccessTokenAsync(user);
+            return access?.Token;
         }
     }
 

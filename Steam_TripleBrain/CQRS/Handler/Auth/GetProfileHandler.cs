@@ -1,39 +1,30 @@
 ﻿using MediatR;
 using Steam_TripleBrain.CQRS.Query.AuthQuery;
-using Steam_TripleBrain.Models;
-using Steam_TripleBrain.Repositories.Interface;
+using Steam_TripleBrain.CQRS.Query.AuthQuery;
+using Steam_TripleBrain.Data;
+using Microsoft.AspNetCore.Identity;
 
 namespace Steam_TripleBrain.CQRS.Handler.Auth
 {
-    public class GetProfileHandler : IRequestHandler<GetProfileQuery, ProfilesAcc>
+    public class GetProfileHandler : IRequestHandler<GetProfileQuery, AppUser>
     {
-        private readonly IUserRepository _repo;
-        public GetProfileHandler(IUserRepository repo)
+        private readonly UserManager<AppUser> _userManager;
+        public GetProfileHandler(UserManager<AppUser> userManager)
         {
-            _repo = repo;
+            _userManager = userManager;
         }
-        public async Task<ProfilesAcc> Handle(GetProfileQuery request, CancellationToken cancellationToken)
+
+        public async Task<AppUser> Handle(GetProfileQuery request, CancellationToken cancellationToken)
         {
             if(string.IsNullOrWhiteSpace(request.Username))
-                throw new ArgumentException("Username cannot be null or empty.");                     // Якщо по запросу не передано ім'я користувача, викидаємо виняток
+                throw new ArgumentException("Username cannot be null or empty.");
 
-            var profile = await _repo.GetByUsernameAsync(request.Username);                           // Викликаємо метод репозиторію для отримання профілю за ім'ям користувача
+            var user = await _userManager.FindByNameAsync(request.Username) ?? await _userManager.FindByEmailAsync(request.Username);
 
-            if (profile == null)
-                throw new KeyNotFoundException($"No profile found for username: {request.Username}"); // Якщо профіль не знайдено, викидаємо виняток
+            if (user == null)
+                throw new KeyNotFoundException($"No profile found for username: {request.Username}");
 
-            // Map Profiles (entity) to ProfilesAcc (DTO)
-            var result = new ProfilesAcc
-            {
-                Id = profile.Id,
-                Username = profile.Username,
-                PasswordHash = profile.PasswordHash,
-                Role = profile.Role,
-                Email = profile.Email,
-                FullName = profile.FullName
-            };
-
-            return result;
+            return user;
         }
     }
 }

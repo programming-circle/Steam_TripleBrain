@@ -22,7 +22,7 @@ namespace Steam_TripleBrain.CQRS.Handler.Orders
         public async Task<Result<List<OrderViewProfile>>> Handle(GetAllOrdersQuery request, CancellationToken cancellationToken)
         {
             var orders = await _context.Orders.Include(o => o.Items).ToListAsync(cancellationToken);
-            var profiles = orders.Select(o => MappingProfile.ToProfile(o)).ToList();
+            var profiles = orders.Select(o => OrderMappingProfile.ToProfile(o)).ToList();
             return Result<List<OrderViewProfile>>.Success(profiles);
         }
     }

@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Steam_TripleBrain.CQRS.Command.Auth;
-using Steam_TripleBrain.Services.Interface;
+using Steam_TripleBrain.Services;
 
 namespace Steam_TripleBrain.CQRS.Handler.Auth
 {
@@ -15,10 +15,10 @@ namespace Steam_TripleBrain.CQRS.Handler.Auth
 
         public async Task<bool> Handle(RegisterProfileCommand request, CancellationToken cancellationToken)
         {
-            if (request == null || request.Profile == null)
-                throw new ArgumentException("Profile data is required");        // Якщо дані профілю не передані, викидаємо виняток
+            if (request == null)
+                throw new ArgumentException("Registration data is required");
 
-            var result = await _authService.RegisterAsync(request.Profile);     // Викликаємо метод реєстрації з сервісу аутентифікації
+            var result = await _authService.RegisterAsync(request.Email, request.Password);
 
             return result;                                                      // Повертаємо результат реєстрації (true або false)
         }

@@ -32,7 +32,7 @@ namespace Steam_TripleBrain.CQRS.Command.Game
         public string Description { get; set; }
         public List<GenreViewProfile> Genres { get; set; }
 
-        public List<TagViewProfile>? Tags { get; set; }
+        //public List<TagViewProfile>? Tags { get; set; }
 
         public decimal Price { get; set; }
 

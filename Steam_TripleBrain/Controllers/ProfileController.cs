@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Steam_TripleBrain.Repositories.Interface;
+//using Steam_TripleBrain.Repositories.Interface;
 
 namespace Steam_TripleBrain.Controllers
 {
@@ -9,11 +9,11 @@ namespace Steam_TripleBrain.Controllers
     [Authorize]
     public class ProfileController : Controller
     {
-        private readonly IUserRepository _userRepo;
+        //private readonly IUserRepository _userRepo;
 
-        public ProfileController(IUserRepository userRepo)
+        public ProfileController(/*IUserRepository userRepo*/)
         {
-            _userRepo = userRepo;
+            //_userRepo = userRepo;
         }
 
         [HttpGet("{username}")]

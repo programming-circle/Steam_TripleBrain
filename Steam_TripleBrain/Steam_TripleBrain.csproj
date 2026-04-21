@@ -7,61 +7,142 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<Compile Remove="CQRS\Command\Auth\**" />
 		<Compile Remove="CQRS\Command\DLCs\**" />
+		<Compile Remove="CQRS\Command\DLC\**" />
+		<Compile Remove="CQRS\Command\Genres\**" />
+		<Compile Remove="CQRS\Command\ImageUrls\**" />
+		<Compile Remove="CQRS\Command\OrderItems\**" />
+		<Compile Remove="CQRS\Command\Order\**" />
 		<Compile Remove="CQRS\Command\Reviews\**" />
 		<Compile Remove="CQRS\Command\Tags\**" />
+		<Compile Remove="CQRS\Command\Users\**" />
+		<Compile Remove="CQRS\Command\WishLists\**" />
+		<Compile Remove="CQRS\Handler\Auth\**" />
 		<Compile Remove="CQRS\Handler\DLCs\**" />
+		<Compile Remove="CQRS\Handler\Genres\**" />
+		<Compile Remove="CQRS\Handler\ImageUrls\**" />
+		<Compile Remove="CQRS\Handler\OrderItems\**" />
+		<Compile Remove="CQRS\Handler\Orders\**" />
+		<Compile Remove="CQRS\Handler\Order\**" />
 		<Compile Remove="CQRS\Handler\Reviews\**" />
 		<Compile Remove="CQRS\Handler\Tags\**" />
+		<Compile Remove="CQRS\Handler\Users\**" />
+		<Compile Remove="CQRS\Handler\WishLists\**" />
 		<Compile Remove="CQRS\Query\**" />
+		<Compile Remove="Data\APPTokenData\**" />
+		<Compile Remove="Models\AuthData\**" />
+		<Content Remove="CQRS\Command\Auth\**" />
 		<Content Remove="CQRS\Command\DLCs\**" />
+		<Content Remove="CQRS\Command\DLC\**" />
+		<Content Remove="CQRS\Command\Genres\**" />
+		<Content Remove="CQRS\Command\ImageUrls\**" />
+		<Content Remove="CQRS\Command\OrderItems\**" />
+		<Content Remove="CQRS\Command\Order\**" />
 		<Content Remove="CQRS\Command\Reviews\**" />
 		<Content Remove="CQRS\Command\Tags\**" />
+		<Content Remove="CQRS\Command\Users\**" />
+		<Content Remove="CQRS\Command\WishLists\**" />
+		<Content Remove="CQRS\Handler\Auth\**" />
 		<Content Remove="CQRS\Handler\DLCs\**" />
+		<Content Remove="CQRS\Handler\Genres\**" />
+		<Content Remove="CQRS\Handler\ImageUrls\**" />
+		<Content Remove="CQRS\Handler\OrderItems\**" />
+		<Content Remove="CQRS\Handler\Orders\**" />
+		<Content Remove="CQRS\Handler\Order\**" />
 		<Content Remove="CQRS\Handler\Reviews\**" />
 		<Content Remove="CQRS\Handler\Tags\**" />
+		<Content Remove="CQRS\Handler\Users\**" />
+		<Content Remove="CQRS\Handler\WishLists\**" />
 		<Content Remove="CQRS\Query\**" />
+		<Content Remove="Data\APPTokenData\**" />
+		<Content Remove="Models\AuthData\**" />
+		<EmbeddedResource Remove="CQRS\Command\Auth\**" />
 		<EmbeddedResource Remove="CQRS\Command\DLCs\**" />
+		<EmbeddedResource Remove="CQRS\Command\DLC\**" />
+		<EmbeddedResource Remove="CQRS\Command\Genres\**" />
+		<EmbeddedResource Remove="CQRS\Command\ImageUrls\**" />
+		<EmbeddedResource Remove="CQRS\Command\OrderItems\**" />
+		<EmbeddedResource Remove="CQRS\Command\Order\**" />
 		<EmbeddedResource Remove="CQRS\Command\Reviews\**" />
 		<EmbeddedResource Remove="CQRS\Command\Tags\**" />
+		<EmbeddedResource Remove="CQRS\Command\Users\**" />
+		<EmbeddedResource Remove="CQRS\Command\WishLists\**" />
+		<EmbeddedResource Remove="CQRS\Handler\Auth\**" />
 		<EmbeddedResource Remove="CQRS\Handler\DLCs\**" />
+		<EmbeddedResource Remove="CQRS\Handler\Genres\**" />
+		<EmbeddedResource Remove="CQRS\Handler\ImageUrls\**" />
+		<EmbeddedResource Remove="CQRS\Handler\OrderItems\**" />
+		<EmbeddedResource Remove="CQRS\Handler\Orders\**" />
+		<EmbeddedResource Remove="CQRS\Handler\Order\**" />
 		<EmbeddedResource Remove="CQRS\Handler\Reviews\**" />
 		<EmbeddedResource Remove="CQRS\Handler\Tags\**" />
+		<EmbeddedResource Remove="CQRS\Handler\Users\**" />
+		<EmbeddedResource Remove="CQRS\Handler\WishLists\**" />
 		<EmbeddedResource Remove="CQRS\Query\**" />
+		<EmbeddedResource Remove="Data\APPTokenData\**" />
+		<EmbeddedResource Remove="Models\AuthData\**" />
+		<None Remove="CQRS\Command\Auth\**" />
 		<None Remove="CQRS\Command\DLCs\**" />
+		<None Remove="CQRS\Command\DLC\**" />
+		<None Remove="CQRS\Command\Genres\**" />
+		<None Remove="CQRS\Command\ImageUrls\**" />
+		<None Remove="CQRS\Command\OrderItems\**" />
+		<None Remove="CQRS\Command\Order\**" />
 		<None Remove="CQRS\Command\Reviews\**" />
 		<None Remove="CQRS\Command\Tags\**" />
+		<None Remove="CQRS\Command\Users\**" />
+		<None Remove="CQRS\Command\WishLists\**" />
+		<None Remove="CQRS\Handler\Auth\**" />
 		<None Remove="CQRS\Handler\DLCs\**" />
+		<None Remove="CQRS\Handler\Genres\**" />
+		<None Remove="CQRS\Handler\ImageUrls\**" />
+		<None Remove="CQRS\Handler\OrderItems\**" />
+		<None Remove="CQRS\Handler\Orders\**" />
+		<None Remove="CQRS\Handler\Order\**" />
 		<None Remove="CQRS\Handler\Reviews\**" />
 		<None Remove="CQRS\Handler\Tags\**" />
+		<None Remove="CQRS\Handler\Users\**" />
+		<None Remove="CQRS\Handler\WishLists\**" />
 		<None Remove="CQRS\Query\**" />
+		<None Remove="Data\APPTokenData\**" />
+		<None Remove="Models\AuthData\**" />
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Remove="Controllers\AdminController.cs" />
 	  <Compile Remove="Controllers\DLCController.cs" />
+	  <Compile Remove="Controllers\GenreController.cs" />
+	  <Compile Remove="Controllers\ImageUrlController.cs" />
+	  <Compile Remove="Controllers\OrderController.cs" />
+	  <Compile Remove="Controllers\ProfileController.cs" />
 	  <Compile Remove="Controllers\ReviewController.cs" />
 	  <Compile Remove="Controllers\TagController.cs" />
+	  <Compile Remove="Controllers\WishListController.cs" />
+	  <Compile Remove="MappingProfiles\GenreMappingProfile.cs" />
+	  <Compile Remove="MappingProfiles\ImageMappingProfile.cs" />
+	  <Compile Remove="MappingProfiles\MappingProfile.cs" />
+	  <Compile Remove="MappingProfiles\OrderItemMappingProfile.cs" />
+	  <Compile Remove="MappingProfiles\OrderMappingProfile.cs" />
+	  <Compile Remove="Models\DLC.cs" />
+	  <Compile Remove="Models\FriendShip.cs" />
+	  <Compile Remove="Models\ProfilesAcc.cs" />
+	  <Compile Remove="Models\Review.cs" />
+	  <Compile Remove="Models\Tag.cs" />
+	  <Compile Remove="Profiles\ReviewViewProfile.cs" />
+	  <Compile Remove="Profiles\TagViewProfile.cs" />
+	  <Compile Remove="Repositories\Interface\ITokenLogRepository.cs" />
+	  <Compile Remove="Repositories\Interface\IUserRepository.cs" />
+	  <Compile Remove="Repositories\TokenLogRepository.cs" />
+	  <Compile Remove="Repositories\UserRepository.cs" />
+	  <Compile Remove="Services\AuthService.cs" />
+	  <Compile Remove="Services\IAuthService.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<Compile Include="CQRS\Query\AuthQuery\GetProfileQuery.cs" />
-		<Compile Include="CQRS\Query\AuthQuery\GetTokenLogsQuery.cs" />
-		<Compile Include="CQRS\Query\DLCs\GetAllDLCsQuery.cs" />
-		<Compile Include="CQRS\Query\DLCs\GetDLCByIdQuery.cs" />
 		<Compile Include="CQRS\Query\Game\DeleteGameByIdQueryRequest.cs" />
 		<Compile Include="CQRS\Query\Game\GetAllGamesQueryRequest.cs" />
 		<Compile Include="CQRS\Query\Game\GetGameByIdQueryRequest.cs" />
-		<Compile Include="CQRS\Query\Genres\GetAllGenresQuery.cs" />
-		<Compile Include="CQRS\Query\Genres\GetGenreByIdQuery.cs" />
-		<Compile Include="CQRS\Query\ImageUrls\GetAllImageUrlsQuery.cs" />
-		<Compile Include="CQRS\Query\ImageUrls\GetImageUrlByIdQuery.cs" />
-		<Compile Include="CQRS\Query\Orders\GetAllOrdersQuery.cs" />
-		<Compile Include="CQRS\Query\Orders\GetOrderByIdQuery.cs" />
-		<Compile Include="CQRS\Query\Reviews\GetAllReviewsQuery.cs" />
-		<Compile Include="CQRS\Query\Reviews\GetReviewByIdQuery.cs" />
-		<Compile Include="CQRS\Query\Tags\GetAllTagsQuery.cs" />
-		<Compile Include="CQRS\Query\Tags\GetTagByIdQuery.cs" />
-		<Compile Include="CQRS\Query\WishLists\GetAllWishListsQuery.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -95,17 +176,24 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="CQRS\Command\DLC\" />
-		<Folder Include="Data\APPTokenData\" />
-		<Folder Include="Models\AuthData\" />
-		<Folder Include="Services\" />
-		<Folder Include="Profiles\" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <None Include="Controllers\DLCController.cs" />
-	  <None Include="Controllers\ReviewController.cs" />
-	  <None Include="Controllers\TagController.cs" />
+	  <None Include="MappingProfiles\GenreMappingProfile.cs" />
+	  <None Include="MappingProfiles\ImageMappingProfile.cs" />
+	  <None Include="MappingProfiles\MappingProfile.cs" />
+	  <None Include="MappingProfiles\OrderItemMappingProfile.cs" />
+	  <None Include="MappingProfiles\OrderMappingProfile.cs" />
+	  <None Include="Models\DLC.cs" />
+	  <None Include="Models\FriendShip.cs" />
+	  <None Include="Models\ProfilesAcc.cs" />
+	  <None Include="Models\Review.cs" />
+	  <None Include="Models\Tag.cs" />
+	  <None Include="Profiles\ReviewViewProfile.cs" />
+	  <None Include="Profiles\TagViewProfile.cs" />
+	  <None Include="Repositories\Interface\ITokenLogRepository.cs" />
+	  <None Include="Repositories\Interface\IUserRepository.cs" />
+	  <None Include="Repositories\TokenLogRepository.cs" />
+	  <None Include="Repositories\UserRepository.cs" />
+	  <None Include="Services\AuthService.cs" />
+	  <None Include="Services\IAuthService.cs" />
 	</ItemGroup>
 
 </Project>

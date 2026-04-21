@@ -24,7 +24,7 @@ namespace Steam_TripleBrain.CQRS.Handler.Genres
             if (genre == null)
                 return Result<Profiles.GenreViewProfile>.Failure("Genre not found");
 
-            var profile = MappingProfile.ToProfile(genre);
+            var profile = GenreMappingProfile.ToProfile(genre);
             return Result<Profiles.GenreViewProfile>.Success(profile);
         }
     }

@@ -24,7 +24,10 @@ namespace Steam_TripleBrain.CQRS.Handler.ImageUrls
             if (existing == null)
                 return Result<ImageUrl>.Failure("Image not found");
 
-            var updated = MappingProfile.ToImageUrl(request);
+            var updated = new ImageUrl
+            {
+                Url = request.Url
+            };
             updated.Id = existing.Id;
 
             _context.Entry(existing).CurrentValues.SetValues(updated);

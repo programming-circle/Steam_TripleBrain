@@ -8,7 +8,7 @@
 
         public Guid? GameId { get; set; }
 
-        public Guid? DLCId { get; set; }
+        //public Guid? DLCId { get; set; }
 
         public decimal PriceOfItem { get; set; }
     }

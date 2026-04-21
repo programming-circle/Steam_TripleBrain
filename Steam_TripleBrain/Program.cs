@@ -5,11 +5,12 @@ using Steam_TripleBrain.Data;
 using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using Steam_TripleBrain.Repositories;
-using Steam_TripleBrain.Repositories.Interface;
+//using Steam_TripleBrain.Repositories;
+//using Steam_TripleBrain.Repositories.Interface;
 using Steam_TripleBrain.Services;
-using Steam_TripleBrain.Services.Interface;
 using System.Text;
+using Microsoft.AspNetCore.Identity;
+using Steam_TripleBrain.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -108,10 +109,22 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))); // Налаштовуємо контекст бази даних для використання SQL Server з рядком підключення з конфігурації
 
 // Додаємо репозиторії та сервіси
-builder.Services.AddScoped<IUserRepository, UserRepository>();          // Реєструємо UserRepository для інтерфейсу IUserRepository
-builder.Services.AddScoped<ITokenLogRepository, TokenLogRepository>();  // Реєструємо TokenLogRepository для інтерфейсу ITokenLogRepository
-builder.Services.AddScoped<IAuthService, AuthService>();                // Реєструємо AuthService для інтерфейсу IAuthService
-builder.Services.AddScoped<ITokenService, TokenService>();              // Реєструємо TokenService для інтерфейсу ITokenService
+// Identity (register UserManager, RoleManager, SignInManager, etc.)
+builder.Services.AddIdentity<AppUser, AppRole>(options =>
+{
+    options.Password.RequireDigit = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequiredLength = 6;
+    options.User.RequireUniqueEmail = false;
+})
+    .AddEntityFrameworkStores<AppDbContext>()
+    .AddDefaultTokenProviders();
+
+//builder.Services.AddScoped<ITokenLogRepository, TokenLogRepository>();  
+//builder.Services.AddScoped<IUserRepository, UserRepository>();
+//builder.Services.AddScoped<IAuthService, AuthService>();                
+builder.Services.AddScoped<ITokenService, TokenService>();              
 
 
 
@@ -130,5 +143,25 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+// Ensure required roles exist
+using (var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<AppRole>>();
+    var roles = new[] { "User" };
+    foreach (var role in roles)
+    {
+        var exists = roleManager.RoleExistsAsync(role).GetAwaiter().GetResult();
+        if (!exists)
+        {
+            var createResult = roleManager.CreateAsync(new AppRole { Name = role }).GetAwaiter().GetResult();
+            if (!createResult.Succeeded)
+            {
+                var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+                logger.LogError("Failed to create role {role}: {errors}", role, string.Join(',', createResult.Errors.Select(e => e.Description)));
+            }
+        }
+    }
+}
 
 app.Run();

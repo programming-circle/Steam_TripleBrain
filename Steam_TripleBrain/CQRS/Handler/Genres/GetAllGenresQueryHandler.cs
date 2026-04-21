@@ -22,7 +22,7 @@ namespace Steam_TripleBrain.CQRS.Handler.Genres
         public async Task<Result<List<GenreViewProfile>>> Handle(GetAllGenresQuery request, CancellationToken cancellationToken)
         {
             var genres = await _context.Genres.ToListAsync(cancellationToken);
-            var profiles = genres.Select(g => MappingProfile.ToProfile(g)).ToList();
+            var profiles = genres.Select(g => GenreMappingProfile.ToProfile(g)).ToList();
             return Result<List<GenreViewProfile>>.Success(profiles);
         }
     }

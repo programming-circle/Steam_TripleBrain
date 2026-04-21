@@ -24,7 +24,7 @@ namespace Steam_TripleBrain.CQRS.Handler.OrderItems
                 return Result<OrderItem>.Failure("OrderItem not found");
 
             // Map updated values using mapping profile (preserve Id)
-            var updated = Steam_TripleBrain.MappingProfiles.MappingProfile.ToOrderItem(new Steam_TripleBrain.CQRS.Command.OrderItems.CreateOrderItemCommand
+            var updated = MappingProfiles.OrderItemMappingProfile.ToOrderItem(new CreateOrderItemCommand
             {
                 Id = request.Id,
                 OrderId = request.OrderId,

@@ -25,7 +25,7 @@ namespace Steam_TripleBrain.CQRS.Handler.ImageUrls
             if (item == null)
                 return Result<ImageUrlViewProfile>.Failure("Image not found");
 
-            var profile = MappingProfile.ToProfile(item);
+            var profile = ImageMappingProfile.ToProfile(item);
             return Result<ImageUrlViewProfile>.Success(profile);
         }
     }

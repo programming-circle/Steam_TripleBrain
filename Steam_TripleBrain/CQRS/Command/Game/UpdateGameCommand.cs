@@ -18,14 +18,14 @@ namespace Steam_TripleBrain.CQRS.Command.Game
         public string Description { get; set; }
         public List<Genre> Genres { get; set; }
 
-        public List<Tag>? Tags { get; set; }
+        //public List<Tag>? Tags { get; set; }
 
         public decimal Price { get; set; }
 
         public int Discount { get; set; }
 
-        public Guid Author { get; set; }
+        public Guid Developer { get; set; }
 
-        public List<DLC>? DLCs { get; set; }
+        //public List<DLC>? DLCs { get; set; }
     }
 }

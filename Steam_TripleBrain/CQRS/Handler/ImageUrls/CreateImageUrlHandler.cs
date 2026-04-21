@@ -20,7 +20,7 @@ namespace Steam_TripleBrain.CQRS.Handler.ImageUrls
 
         public async Task<Result<ImageUrl>> Handle(CreateImageUrlCommand request, CancellationToken cancellationToken)
         {
-            var item = MappingProfile.ToImageUrl(request);
+            var item = ImageMappingProfile.ToImageUrl(request);
 
             _context.ImageUrls.Add(item);
             await _context.SaveChangesAsync(cancellationToken);

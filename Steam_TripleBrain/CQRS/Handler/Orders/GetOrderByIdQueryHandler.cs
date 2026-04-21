@@ -25,7 +25,7 @@ namespace Steam_TripleBrain.CQRS.Handler.Orders
             if (order == null)
                 return Result<OrderViewProfile>.Failure("Order not found");
 
-            var profile = MappingProfile.ToProfile(order);
+            var profile = OrderMappingProfile.ToProfile(order);
             return Result<OrderViewProfile>.Success(profile);
         }
     }

@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Steam_TripleBrain.CQRS.Command;
-using Steam_TripleBrain.Services.Interface;
+using Steam_TripleBrain.Services;
 
 namespace Steam_TripleBrain.CQRS.Handler.Auth
 {

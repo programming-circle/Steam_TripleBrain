@@ -21,7 +21,7 @@ namespace Steam_TripleBrain.CQRS.Handler.OrderItems
         public async Task<Result<OrderItem>> Handle(CreateOrderItemCommand request, CancellationToken cancellationToken)
         {
             // Map request to domain model using mapping profile
-            var item = MappingProfile.ToOrderItem(request);
+            var item = OrderItemMappingProfile.ToOrderItem(request);
 
             _context.OrderItems.Add(item);
             await _context.SaveChangesAsync(cancellationToken);

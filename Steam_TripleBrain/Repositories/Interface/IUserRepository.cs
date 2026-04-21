@@ -5,9 +5,9 @@ namespace Steam_TripleBrain.Repositories.Interface
 {
     public interface IUserRepository
     {
-        Task AddAsync(ProfilesAcc profile);                    // Додайте новый профиль
-        Task<ProfilesAcc> GetByUsernameAsync(string username); // Получите профиль по имени пользователя
-        Task<bool> DeleteAsync(string username);
-        Task<IEnumerable<ProfilesAcc>> GetAllAsync();
+        Task AddAsync(ProfilesAcc profile);                    //Adding new profile/account
+        Task<ProfilesAcc> GetByUsernameAsync(string username); //Getting profiles by Username
+        Task<bool> DeleteAsync(string username); //Deleting
+        Task<IEnumerable<ProfilesAcc>> GetAllAsync(); //Getting all
     }
 }

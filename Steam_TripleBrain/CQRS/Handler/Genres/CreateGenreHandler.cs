@@ -4,10 +4,11 @@ using Steam_TripleBrain.CQRS.Command.Genres;
 using Steam_TripleBrain.Data;
 using Steam_TripleBrain.Models;
 using Steam_TripleBrain.MappingProfiles;
+using Steam_TripleBrain.Profiles;
 
 namespace Steam_TripleBrain.CQRS.Handler.Genres
 {
-    public class CreateGenreHandler : IRequestHandler<CreateGenreCommand, Result<Genre>>
+    public class CreateGenreHandler : IRequestHandler<CreateGenreCommand, Result<GenreViewProfile>>
     {
         private readonly AppDbContext _context;
         private readonly ILogger<CreateGenreHandler> _logger;
@@ -28,8 +29,8 @@ namespace Steam_TripleBrain.CQRS.Handler.Genres
 
             _context.Genres.Add(genre);
             await _context.SaveChangesAsync(cancellationToken);
-
-            return Result<Genre>.Success(genre);
+            var result = GenreMappingProfile.ToProfile(genre);
+            return Result<GenreViewProfile>.Success(result);
         }
     }
 }

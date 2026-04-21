@@ -28,9 +28,9 @@ namespace Steam_TripleBrain.CQRS.Handler.Game
             IQueryable<Models.Game> query = _context.Games.AsNoTracking()
                 .Include(g => g.Poster)
                 .Include(g => g.Images)
-                .Include(g => g.Genres)
-                .Include(g => g.Tags)
-                .Include(g => g.DLCs);
+                .Include(g => g.Genres);
+                //.Include(g => g.Tags)
+                //.Include(g => g.DLCs);
 
             // IIf something gonna be filtered.
             bool hasAnyFilter = !string.IsNullOrWhiteSpace(request.Name)

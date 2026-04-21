@@ -23,7 +23,11 @@ namespace Steam_TripleBrain.CQRS.Handler.Orders
             if (request == null)
                 return Result<Order>.Failure("Request is null");
 
-            var order = MappingProfile.ToOrder(request);
+            UpdateOrderCommand request2 = request;
+            var order = new Order
+            {
+                order.
+            }
 
             _context.Orders.Add(order);
             await _context.SaveChangesAsync(cancellationToken);

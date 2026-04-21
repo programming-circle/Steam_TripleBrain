@@ -15,6 +15,6 @@ namespace Steam_TripleBrain.Profiles
         public DateTime DateOfReg { get; set; }
 
         public List<Game> PurchasedGames { get; set; }
-        public List<DLC> DLCs { get; set; }
+        // public List<DLC> DLCs { get; set; }
     }
 }

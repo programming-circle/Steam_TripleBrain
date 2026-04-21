@@ -13,7 +13,7 @@ namespace Steam_TripleBrain.MappingProfiles
         {
             // AutoMapper configuration can be set up here if needed
         }
-        public static Game ToGame(CreateGameCommand game)
+        public static Game ToGame(CreateGameCommand game )
         {
             // Ensure we have a valid id
             var id = game.Id == Guid.Empty ? Guid.NewGuid() : game.Id;
@@ -41,26 +41,73 @@ namespace Steam_TripleBrain.MappingProfiles
                     Name = i.Name
                 }).ToList(),
                 // Tags: convert to a list
-                Tags = game.Tags?.Select(i => new Tag
+                /*Tags = game.Tags?.Select(i => new Tag
                 {
                     Id = i.Id == Guid.Empty ? Guid.NewGuid() : i.Id,
                     Name = i.Name
-                }).ToList(),
+                }).ToList(),*/
                 Price = game.Price,
                 Discount = game.Discount,
-                Author = game.Author,
+                Developer = game.Developer,
                 // DLCs: map each DTO to domain DLC; if types match this will copy the list
-                DLCs = game.DLCs?.Select(d => new DLC
+                /*DLCs = game.DLCs?.Select(d => new DLC
                 {
                     Id = d.Id == Guid.Empty ? Guid.NewGuid() : d.Id,
                     Name = d.Name,
                     Price = d.Price,
                     Discount = d.Discount,
                     Description = d.Description,
-                }).ToList()
+                }).ToList()*/
             };
         }
 
+        public static Game ToGame(UpdateGameCommand game)
+        {
+            // Ensure we have a valid id
+            var id = game.Id == Guid.Empty ? Guid.NewGuid() : game.Id;
+
+            return new Game()
+            {
+                Id = id,
+                Name = game.Name,
+                Poster = game.Poster == null ? null : new ImageUrl
+                {
+                    Id = game.Poster.Id == Guid.Empty ? Guid.NewGuid() : game.Poster.Id,
+                    Url = game.Poster.Url
+                },
+                Images = game.Images?.Select(i => new ImageUrl
+                {
+                    Id = i.Id == Guid.Empty ? Guid.NewGuid() : i.Id,
+                    Url = i.Url
+                }).ToList(),
+                Rating = game.Rating,
+                Description = game.Description,
+                // Genres: already domain types in the command, just make a defensive copy
+                Genres = game.Genres?.Select(i => new Genre
+                {
+                    Id = i.Id == Guid.Empty ? Guid.NewGuid() : i.Id,
+                    Name = i.Name
+                }).ToList(),
+                // Tags: convert to a list
+                /*Tags = game.Tags?.Select(i => new Tag
+                {
+                    Id = i.Id == Guid.Empty ? Guid.NewGuid() : i.Id,
+                    Name = i.Name
+                }).ToList(),*/
+                Price = game.Price,
+                Discount = game.Discount,
+                Developer = game.Developer,
+                // DLCs: map each DTO to domain DLC; if types match this will copy the list
+                /*DLCs = game.DLCs?.Select(d => new DLC
+                {
+                    Id = d.Id == Guid.Empty ? Guid.NewGuid() : d.Id,
+                    Name = d.Name,
+                    Price = d.Price,
+                    Discount = d.Discount,
+                    Description = d.Description,
+                }).ToList()*/
+            };
+        }
         public static GameViewProfile ToProfile(Game game)
         {
             return new GameViewProfile()
@@ -86,17 +133,18 @@ namespace Steam_TripleBrain.MappingProfiles
                     Name = i.Name
                 }).ToList(),
                 // Tags: convert to a list
+                /*
                 Tags = game.Tags?.Select(i => new TagViewProfile
                 {
                     Id = i.Id == Guid.Empty ? Guid.NewGuid() : i.Id,
                     Name = i.Name
-                }).ToList(),
+                }).ToList(), */
                 Price = game.Price,
                 Discount = game.Discount,
-                Author = game.Author,
+                Developer = game.Developer,
                 CreatedAt = game.CreatedAt,
                 // DLCs: map each DTO to domain DLC; if types match this will copy the list
-                DLCs = game.DLCs?.Select(d => new DLCViewProfile
+                /*DLCs = game.DLCs?.Select(d => new DLCViewProfile
                 {
                     Id = d.Id == Guid.Empty ? Guid.NewGuid() : d.Id,
                     Name = d.Name,
@@ -104,7 +152,7 @@ namespace Steam_TripleBrain.MappingProfiles
                     Discount = d.Discount,
                     Description = d.Description,
                     CreatedAt = d.CreatedAt
-                }).ToList()
+                }).ToList()*/
             };
         }
     }

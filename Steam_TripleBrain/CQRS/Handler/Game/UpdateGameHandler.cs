@@ -33,8 +33,8 @@ namespace Steam_TripleBrain.CQRS.Handler.Game
                 .Include(g => g.Poster)
                 .Include(g => g.Images)
                 .Include(g => g.Genres)
-                .Include(g => g.Tags)
-                .Include(g => g.DLCs)
+                //.Include(g => g.Tags)
+                //.Include(g => g.DLCs)
                 .FirstOrDefaultAsync(g => g.Id == request.Id, cancellationToken);
 
             if (game == null)
@@ -49,7 +49,7 @@ namespace Steam_TripleBrain.CQRS.Handler.Game
             game.Description = request.Description;
             game.Price = request.Price;
             game.Discount = request.Discount;
-            game.Author = request.Author;
+            game.Developer = request.Developer;
 
             // Update poster
             if (request.Poster != null)
@@ -73,13 +73,13 @@ namespace Steam_TripleBrain.CQRS.Handler.Game
                 Id = g.Id == Guid.Empty ? Guid.NewGuid() : g.Id,
                 Name = g.Name
             }).ToList() ?? new List<Genre>();
-
+            /*
             game.Tags = request.Tags?.Select(t => new Tag
             {
                 Id = t.Id == Guid.Empty ? Guid.NewGuid() : t.Id,
                 Name = t.Name
-            }).ToList();
-
+            }).ToList();*/
+            /*
             game.DLCs = request.DLCs?.Select(d => new DLC
             {
                 Id = d.Id == Guid.Empty ? Guid.NewGuid() : d.Id,
@@ -88,7 +88,7 @@ namespace Steam_TripleBrain.CQRS.Handler.Game
                 Discount = d.Discount,
                 Description = d.Description,
                 Game = game
-            }).ToList();
+            }).ToList();*/
 
             // Persist changes
             _context.Games.Update(game);

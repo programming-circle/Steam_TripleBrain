@@ -22,7 +22,7 @@ namespace Steam_TripleBrain.CQRS.Handler.ImageUrls
         public async Task<Result<List<ImageUrlViewProfile>>> Handle(GetAllImageUrlsQuery request, CancellationToken cancellationToken)
         {
             var items = await _context.ImageUrls.ToListAsync(cancellationToken);
-            var profiles = items.Select(i => MappingProfile.ToProfile(i)).ToList();
+            var profiles = items.Select(i => ImageMappingProfile.ToProfile(i)).ToList();
             return Result<List<ImageUrlViewProfile>>.Success(profiles);
         }
     }

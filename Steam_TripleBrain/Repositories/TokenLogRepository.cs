@@ -9,49 +9,73 @@ namespace Steam_TripleBrain.Repositories
     public class TokenLogRepository : ITokenLogRepository
     {
         private readonly AppDbContext _context;
-        public TokenLogRepository(AppDbContext context)
+        private readonly ILogger<TokenLogRepository> _logger;
+        public TokenLogRepository(AppDbContext context, ILogger<TokenLogRepository> logger)
         {
-            _context = context; 
+            _context = context;
+            _logger = logger;
         }
 
         public async Task AddAsync(TokenLogs log)
         {
-            _context.TokenLogs.Add(log); // Додаємо новий лог до контексту бази даних
-            await _context.SaveChangesAsync(); // Зберігаємо зміни в базі даних після додавання нового лога
+            _logger.LogInformation("#### Adding async token to Logs in DB and saving");
+            _context.TokenLogs.Add(log); //Logging
+            await _context.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<TokenLogs>> GetByUserAsync(string username)
         {
+            _logger.LogInformation("#### Start GetByUserAsync.");
             if (string.IsNullOrWhiteSpace(username))
-                return Enumerable.Empty<TokenLogs>(); // Якщо ім'я користувача порожнє або null, повертаємо порожню колекцію
+            {
+                _logger.LogInformation("#### GetByUserAsync: Username is Null!");
+                return Enumerable.Empty<TokenLogs>();
+                
+            }
 
             var logs = await _context.TokenLogs
                 .Where(t => t.Username == username)
-                .ToListAsync(); // Шукаємо всі логи, пов'язані з вказаним ім'ям користувача
+                .ToListAsync();
 
-            return logs ?? Enumerable.Empty<TokenLogs>(); // Повертаємо знайдені логи або порожню колекцію, якщо не знайдено
+            if (logs.Any())
+            {
+                _logger.LogInformation("#### GetByUserAsync: Logs empty.");
+                return logs;
+            }
+            else return Enumerable.Empty<TokenLogs>();
         }
 
+        //Getting Token by Async in Log
         public async Task<TokenLogs> GetByTokenAsync(string token)
         {
+            _logger.LogInformation("#### Start of Work Get By Token Async");
             if (string.IsNullOrWhiteSpace(token))
-                return null; // Якщо токе порожній або null, повертаємо null
+            {
+                _logger.LogInformation("#### Get By Token Async: token is empty.");
+                return null;
+            }
 
             var log = await _context.TokenLogs
-                .FirstOrDefaultAsync(t => t.Token == token); // Шукаємо токен у базі даних
-
-            return log; // Повертаємо знайдений лог або null, якщо не знайдено
+                .FirstOrDefaultAsync(t => t.Token == token);
+            if (log == null)
+            {
+                _logger.LogInformation("#### GetByTokenAsync: log is empty");
+                return null;
+            }
+            return log; 
 
         }
 
         public async Task RevokeAsync(string token)
         {
-            var log = await GetByTokenAsync(token); // Використовуємо метод GetByTokenAsync для отримання логів за токеном
+            _logger.LogInformation("#### RevokeAsync start work");
+            var log = await GetByTokenAsync(token);
             if (log != null)
             {
                 log.IsRevoked = true; // Встановлюємо прапорець IsRevoked в true
                 await _context.SaveChangesAsync(); // Зберігаємо зміни в базі даних
             }
+            else _logger.LogInformation("#### log is empty");
         }
     }
 }

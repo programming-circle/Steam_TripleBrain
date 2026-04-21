@@ -13,7 +13,7 @@
         public DateTime DateOfReg {  get; set; }
 
         public List<Game>? PurchasedGames { get; set; }
-        public List<DLC>? DLCs { get; set; }
+        // public List<DLC>? DLCs { get; set; }
 
         //Planing of adding roles for users, but not sure if it will be needed in the future
         //public Role UserRole { get; set;}
