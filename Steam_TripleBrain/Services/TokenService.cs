@@ -28,9 +28,6 @@ namespace Steam_TripleBrain.Services
 
         public async Task<AccessTokenResult> CreateAccessTokenAsync(AppUser user)
         {
-
-            var roles = await _userManager.GetRolesAsync(user);
-
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
@@ -38,23 +35,13 @@ namespace Steam_TripleBrain.Services
                 new Claim(ClaimTypes.Name, user.UserName ?? "")
             };
 
-            foreach (var role in roles)
-            {
-                claims.Add(new Claim(ClaimTypes.Role, role.ToString()));
-            }
-
-
             var key = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
 
-            var credentials = new SigningCredentials(
-                key,
-                SecurityAlgorithms.HmacSha256
-                );
+            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var minutes = int.Parse(_configuration["Jwt:AccessTokenMinutes"] ?? "30");
             var expire = DateTime.UtcNow.AddMinutes(minutes);
-
 
             var jwt = new JwtSecurityToken(
                 issuer: _configuration["Jwt:Issuer"],
@@ -62,16 +49,15 @@ namespace Steam_TripleBrain.Services
                 claims: claims,
                 expires: expire,
                 signingCredentials: credentials
-                );
+            );
 
             var tokenString = new JwtSecurityTokenHandler().WriteToken(jwt);
 
-
-            return new AccessTokenResult
+            return await Task.FromResult(new AccessTokenResult
             {
                 Token = tokenString,
                 ExpiresAtUtc = expire
-            };
+            });
         }
 
         public async Task<RefreshTokenResult> CreateRefreshTokenAsync(AppUser user)

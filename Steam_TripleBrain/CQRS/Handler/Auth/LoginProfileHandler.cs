@@ -1,28 +1,54 @@
 ﻿using MediatR;
 using Steam_TripleBrain.CQRS.Command;
+using Steam_TripleBrain.Data;
+using Steam_TripleBrain.Profiles.Tokens;
+using Microsoft.AspNetCore.Identity;
 using Steam_TripleBrain.Services;
 
 namespace Steam_TripleBrain.CQRS.Handler.Auth
 {
-    public class LoginProfileHandler : IRequestHandler<LoginProfileCommand, string>
+    public class LoginProfileHandler : IRequestHandler<LoginProfileCommand, AuthResponse>
     {
-        private readonly IAuthService _authService;
-        public LoginProfileHandler(IAuthService authService)
+        private readonly UserManager<AppUser> _userManager;
+        private readonly ITokenService _tokenService;
+        private readonly ILogger<LoginProfileHandler> _logger;
+
+        public LoginProfileHandler(UserManager<AppUser> userManager, ITokenService tokenService, ILogger<LoginProfileHandler> logger)
         {
-            _authService = authService;
+            _userManager = userManager;
+            _tokenService = tokenService;
+            _logger = logger;
         }
-        public async Task<string> Handle(LoginProfileCommand request, CancellationToken cancellationToken)
+
+        public async Task<AuthResponse> Handle(LoginProfileCommand request, CancellationToken cancellationToken)
         {
             if (request == null || string.IsNullOrWhiteSpace(request.Username) || string.IsNullOrWhiteSpace(request.Password))
-                throw new ArgumentException("Username and password are required");          // Якщо дані не валідні — кидаємо виняток або повертаємо null
+                throw new ArgumentException("Username and password are required");
 
-            var token = await _authService.LoginAsync(request.Username, request.Password);  // Викликаємо сервіс аутентифікації для отримання токена
+            var user = await _userManager.FindByNameAsync(request.Username) ?? await _userManager.FindByEmailAsync(request.Username);
+            if (user == null)
+            {
+                _logger.LogInformation("Login: user not found");
+                return null;
+            }
 
-            if (token == null)
-                return null;                                                                // Якщо аутентифікація не вдалася, повертаємо null
+            var valid = await _userManager.CheckPasswordAsync(user, request.Password);
+            if (!valid)
+            {
+                _logger.LogInformation("Login: invalid password");
+                return null;
+            }
 
-            return token;                                                                   // Повертаємо отриманий токен
+            var access = await _tokenService.CreateAccessTokenAsync(user);
+            var refresh = await _tokenService.CreateRefreshTokenAsync(user);
 
+            return new AuthResponse
+            {
+                Accesstoken = access?.Token,
+                AccessExpiresAtUtc = access?.ExpiresAtUtc ?? DateTime.UtcNow,
+                RefreshToken = refresh?.Token,
+                RefreshExpiresAtUtc = refresh?.ExpireAtUtc ?? DateTime.UtcNow
+            };
         }
     }
 }

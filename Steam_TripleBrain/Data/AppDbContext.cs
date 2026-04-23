@@ -12,7 +12,7 @@ namespace Steam_TripleBrain.Data
         //public DbSet<ProfilesAcc> Profiles { get; set; }
 
         // Table of journal tokens
-        public DbSet<TokenLogs> TokenLogs { get; set; }
+        //public DbSet<TokenLogs> TokenLogs { get; set; }
         //Game
         public DbSet<Game> Games => Set<Game>();
         //DLC

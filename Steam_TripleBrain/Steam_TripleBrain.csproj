@@ -7,6 +7,11 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+       <!-- Include CQRS Auth commands and handlers that were previously excluded -->
+		<Compile Include="CQRS\Command\Auth\RegisterProfileCommand.cs" />
+		<Compile Include="CQRS\Command\Auth\LoginProfileCommand.cs" />
+		<Compile Include="CQRS\Handler\Auth\RegisterProfileHandler.cs" />
+		<Compile Include="CQRS\Handler\Auth\LoginProfileHandler.cs" />
 		<Compile Remove="CQRS\Command\Auth\**" />
 		<Compile Remove="CQRS\Command\DLCs\**" />
 		<Compile Remove="CQRS\Command\DLC\**" />
@@ -135,6 +140,7 @@
 	  <Compile Remove="Repositories\Interface\IUserRepository.cs" />
 	  <Compile Remove="Repositories\TokenLogRepository.cs" />
 	  <Compile Remove="Repositories\UserRepository.cs" />
+	  <Compile Remove="Seed\IdentitySeed.cs" />
 	  <Compile Remove="Services\AuthService.cs" />
 	  <Compile Remove="Services\IAuthService.cs" />
 	</ItemGroup>
@@ -176,6 +182,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Include="CQRS\Handler\Auth\LoginProfileHandler.cs" />
 	  <None Include="MappingProfiles\GenreMappingProfile.cs" />
 	  <None Include="MappingProfiles\ImageMappingProfile.cs" />
 	  <None Include="MappingProfiles\MappingProfile.cs" />
@@ -183,7 +190,6 @@
 	  <None Include="MappingProfiles\OrderMappingProfile.cs" />
 	  <None Include="Models\DLC.cs" />
 	  <None Include="Models\FriendShip.cs" />
-	  <None Include="Models\ProfilesAcc.cs" />
 	  <None Include="Models\Review.cs" />
 	  <None Include="Models\Tag.cs" />
 	  <None Include="Profiles\ReviewViewProfile.cs" />
@@ -192,8 +198,20 @@
 	  <None Include="Repositories\Interface\IUserRepository.cs" />
 	  <None Include="Repositories\TokenLogRepository.cs" />
 	  <None Include="Repositories\UserRepository.cs" />
+	  <None Include="Seed\IdentitySeed.cs" />
 	  <None Include="Services\AuthService.cs" />
 	  <None Include="Services\IAuthService.cs" />
+	</ItemGroup>
+
+	<!-- Ensure CQRS Auth files are included despite earlier removals -->
+	<ItemGroup>
+		<Compile Include="CQRS\Command\Auth\**\*.cs" />
+		<Compile Include="CQRS\Handler\Auth\**\*.cs" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Compile Remove="CQRS\Handler\Auth\GetProfileHandler.cs" />
+	  <Compile Remove="CQRS\Handler\Auth\GetTokenLogsHandler.cs" />
+	  <Compile Remove="CQRS\Handler\Auth\LoginProfileHandler.cs" />
 	</ItemGroup>
 
 </Project>

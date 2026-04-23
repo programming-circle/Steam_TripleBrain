@@ -1,6 +1,5 @@
 ﻿using MediatR;
-using Steam_TripleBrain.CQRS.Query.AuthQuery;
-using Steam_TripleBrain.CQRS.Query.AuthQuery;
+
 using Steam_TripleBrain.Data;
 using Microsoft.AspNetCore.Identity;
 

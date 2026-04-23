@@ -72,45 +72,37 @@ if (connectionString == null)
 try
 {
     builder.Services.AddDbContext<AppDbContext>(
-        options => options.
-            UseSqlServer(connectionString)
-        );
+        options => options.UseSqlServer(connectionString)
+    );
 }
 catch (Exception ex)
 {
-    throw new Exception("Can't connect to MySql Server");
+    throw new Exception("Can't connect to SQL Server");
 }
-//builder.Services.AddDbContext<AppDbContext>(opt =>
-//    opt.UseSqlServer(builder.Configuration.
-//    GetConnectionString("DefaultConnection")));
 
 builder.Services.AddAuthentication(options =>
 {
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme; // Встановлюємо схему аутентифікації за замовчуванням на JWT Bearer
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;  // Встановлюємо схему виклику виклику аутентифікації за замовчуванням на JWT Bearer
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 })
 .AddJwtBearer(options =>
 {
     options.TokenValidationParameters = new TokenValidationParameters
     {
-        ValidateIssuer = true,                                              // Вказуємо, що потрібно перевіряти видавця токена
-        ValidateAudience = true,                                            // Вказуємо, що потрібно перевіряти аудиторію токена
-        ValidateLifetime = true,                                            // Вказуємо, що потрібно перевіряти час життя токена
-        ValidateIssuerSigningKey = true,                                    // Вказуємо, що потрібно перевіряти підпис токена
-        ValidIssuer = builder.Configuration["Jwt:Issuer"],                  // Вказуємо допустимого видавця токена, який зберігається в конфігурації
-        ValidAudience = builder.Configuration["Jwt:Audience"],              // Вказуємо допустиму аудиторію токена, яка зберігається в конфігурації
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidAudience = builder.Configuration["Jwt:Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(           
-            Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))       // Вказуємо секретний ключ для перевірки підпису токена, який зберігається в конфігурації
+            Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
     };
 });
 
 
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))); // Налаштовуємо контекст бази даних для використання SQL Server з рядком підключення з конфігурації
-
-// Додаємо репозиторії та сервіси
-// Identity (register UserManager, RoleManager, SignInManager, etc.)
-builder.Services.AddIdentity<AppUser, AppRole>(options =>
+// Identity (только UserManager, без ролей)
+builder.Services.AddIdentityCore<AppUser>(options =>
 {
     options.Password.RequireDigit = false;
     options.Password.RequireUppercase = false;
@@ -118,13 +110,9 @@ builder.Services.AddIdentity<AppUser, AppRole>(options =>
     options.Password.RequiredLength = 6;
     options.User.RequireUniqueEmail = false;
 })
-    .AddEntityFrameworkStores<AppDbContext>()
-    .AddDefaultTokenProviders();
+    .AddEntityFrameworkStores<AppDbContext>();
 
-//builder.Services.AddScoped<ITokenLogRepository, TokenLogRepository>();  
-//builder.Services.AddScoped<IUserRepository, UserRepository>();
-//builder.Services.AddScoped<IAuthService, AuthService>();                
-builder.Services.AddScoped<ITokenService, TokenService>();              
+builder.Services.AddScoped<ITokenService, TokenService>();
 
 
 
@@ -143,25 +131,5 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
-// Ensure required roles exist
-using (var scope = app.Services.CreateScope())
-{
-    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<AppRole>>();
-    var roles = new[] { "User" };
-    foreach (var role in roles)
-    {
-        var exists = roleManager.RoleExistsAsync(role).GetAwaiter().GetResult();
-        if (!exists)
-        {
-            var createResult = roleManager.CreateAsync(new AppRole { Name = role }).GetAwaiter().GetResult();
-            if (!createResult.Succeeded)
-            {
-                var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-                logger.LogError("Failed to create role {role}: {errors}", role, string.Join(',', createResult.Errors.Select(e => e.Description)));
-            }
-        }
-    }
-}
 
 app.Run();
