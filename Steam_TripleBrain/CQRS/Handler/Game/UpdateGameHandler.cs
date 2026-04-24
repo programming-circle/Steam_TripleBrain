@@ -54,19 +54,11 @@ namespace Steam_TripleBrain.CQRS.Handler.Game
             // Update poster
             if (request.Poster != null)
             {
-                game.Poster = new ImageUrl
-                {
-                    Id = request.Poster.Id == Guid.Empty ? Guid.NewGuid() : request.Poster.Id,
-                    Url = request.Poster.Url
-                };
+                game.Poster = request.Poster;
             }
 
             // Update collections: replace with incoming lists (defensive copy)
-            game.Images = request.Images?.Select(i => new ImageUrl
-            {
-                Id = i.Id == Guid.Empty ? Guid.NewGuid() : i.Id,
-                Url = i.Url
-            }).ToList();
+            game.Images = request.Images ?? null;
 
             game.Genres = request.Genres?.Select(g => new Genre
             {

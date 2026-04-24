@@ -22,16 +22,8 @@ namespace Steam_TripleBrain.MappingProfiles
             {
                 Id = id,
                 Name = game.Name,
-                Poster = game.Poster == null ? null : new ImageUrl
-                {
-                    Id = game.Poster.Id == Guid.Empty ? Guid.NewGuid() : game.Poster.Id,
-                    Url = game.Poster.Url
-                },
-                Images = game.Images?.Select(i => new ImageUrl
-                {
-                    Id = i.Id == Guid.Empty ? Guid.NewGuid() : i.Id,
-                    Url = i.Url
-                }).ToList(),
+                Poster = game.Poster == null ? null : game.Poster,
+                Images = game.Images == null ? null : game.Images,
                 Rating = game.Rating,
                 Description = game.Description,
                 // Genres: already domain types in the command, just make a defensive copy
@@ -61,69 +53,53 @@ namespace Steam_TripleBrain.MappingProfiles
             };
         }
 
-        public static Game ToGame(UpdateGameCommand game)
-        {
-            // Ensure we have a valid id
-            var id = game.Id == Guid.Empty ? Guid.NewGuid() : game.Id;
+        //public static Game ToGame(UpdateGameCommand game)
+        //{
+        //    // Ensure we have a valid id
+        //    var id = game.Id == Guid.Empty ? Guid.NewGuid() : game.Id;
 
-            return new Game()
-            {
-                Id = id,
-                Name = game.Name,
-                Poster = game.Poster == null ? null : new ImageUrl
-                {
-                    Id = game.Poster.Id == Guid.Empty ? Guid.NewGuid() : game.Poster.Id,
-                    Url = game.Poster.Url
-                },
-                Images = game.Images?.Select(i => new ImageUrl
-                {
-                    Id = i.Id == Guid.Empty ? Guid.NewGuid() : i.Id,
-                    Url = i.Url
-                }).ToList(),
-                Rating = game.Rating,
-                Description = game.Description,
-                // Genres: already domain types in the command, just make a defensive copy
-                Genres = game.Genres?.Select(i => new Genre
-                {
-                    Id = i.Id == Guid.Empty ? Guid.NewGuid() : i.Id,
-                    Name = i.Name
-                }).ToList(),
-                // Tags: convert to a list
-                /*Tags = game.Tags?.Select(i => new Tag
-                {
-                    Id = i.Id == Guid.Empty ? Guid.NewGuid() : i.Id,
-                    Name = i.Name
-                }).ToList(),*/
-                Price = game.Price,
-                Discount = game.Discount,
-                Developer = game.Developer,
-                // DLCs: map each DTO to domain DLC; if types match this will copy the list
-                /*DLCs = game.DLCs?.Select(d => new DLC
-                {
-                    Id = d.Id == Guid.Empty ? Guid.NewGuid() : d.Id,
-                    Name = d.Name,
-                    Price = d.Price,
-                    Discount = d.Discount,
-                    Description = d.Description,
-                }).ToList()*/
-            };
-        }
+        //    return new Game()
+        //    {
+        //        Id = id,
+        //        Name = game.Name,
+        //        Poster = game.Poster,
+        //        Images = game.Images ?? null,
+        //        Rating = game.Rating,
+        //        Description = game.Description,
+        //        // Genres: already domain types in the command, just make a defensive copy
+        //        Genres = game.Genres?.Select(i => new Genre
+        //        {
+        //            Id = i.Id == Guid.Empty ? Guid.NewGuid() : i.Id,
+        //            Name = i.Name
+        //        }).ToList(),
+        //        // Tags: convert to a list
+        //        /*Tags = game.Tags?.Select(i => new Tag
+        //        {
+        //            Id = i.Id == Guid.Empty ? Guid.NewGuid() : i.Id,
+        //            Name = i.Name
+        //        }).ToList(),*/
+        //        Price = game.Price,
+        //        Discount = game.Discount,
+        //        Developer = game.Developer,
+        //        // DLCs: map each DTO to domain DLC; if types match this will copy the list
+        //        /*DLCs = game.DLCs?.Select(d => new DLC
+        //        {
+        //            Id = d.Id == Guid.Empty ? Guid.NewGuid() : d.Id,
+        //            Name = d.Name,
+        //            Price = d.Price,
+        //            Discount = d.Discount,
+        //            Description = d.Description,
+        //        }).ToList()*/
+        //    };
+        //}
         public static GameViewProfile ToProfile(Game game)
         {
             return new GameViewProfile()
             {
                 Id = game.Id,
                 Name = game.Name,
-                Poster = game.Poster == null ? null : new ImageUrlViewProfile
-                {
-                    Id = game.Poster.Id == Guid.Empty ? Guid.NewGuid() : game.Poster.Id,
-                    Url = game.Poster.Url
-                },
-                Images = game.Images?.Select(i => new ImageUrlViewProfile
-                {
-                    Id = i.Id == Guid.Empty ? Guid.NewGuid() : i.Id,
-                    Url = i.Url
-                }).ToList(),
+                Poster = game.Poster == null ? null : game.Poster,
+                Images = game.Images == null ? null : game.Images,
                 Rating = game.Rating,
                 Description = game.Description,
                 // Genres: already domain types in the command, just make a defensive copy

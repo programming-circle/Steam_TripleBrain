@@ -9,9 +9,9 @@ namespace Steam_TripleBrain.CQRS.Command.Game
         public Guid Id { get; set; }
         public string Name { get; set; }
 
-        public ImageUrl Poster { get; set; }
+        public string Poster { get; set; }
 
-        public List<ImageUrl>? Images { get; set; }
+        public List<string>? Images { get; set; }
 
         public double Rating { get; set; }
 

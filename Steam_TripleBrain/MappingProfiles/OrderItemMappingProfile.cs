@@ -1,13 +1,14 @@
-﻿using Steam_TripleBrain.CQRS.Command.OrderItems;
+﻿using Steam_TripleBrain.CQRS.Command.OrderItem;
+//using Steam_TripleBrain.CQRS.Command.OrderItems;
 using Steam_TripleBrain.Models;
 using Steam_TripleBrain.Profiles;
 using System;
 using System.Linq;
 namespace Steam_TripleBrain.MappingProfiles
 {
-    public class OrderItemMappingProfile
+    public static class OrderItemMappingProfile
     {
-        OrderItemMappingProfile() { }
+        static OrderItemMappingProfile() { }
 
         public static OrderItem ToOrderItem(CreateOrderItemCommand cmd)
         {

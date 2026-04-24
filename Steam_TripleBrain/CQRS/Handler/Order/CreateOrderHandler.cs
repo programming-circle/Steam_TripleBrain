@@ -1,13 +1,16 @@
-using MediatR;
+﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Steam_TripleBrain.CQRS.Command.Orders;
+using Steam_TripleBrain.CQRS.Command.Order;
+using Steam_TripleBrain.CQRS.Command.OrderItem;
+using Steam_TripleBrain.CQRS.Handler.Game;
 using Steam_TripleBrain.Data;
-using Steam_TripleBrain.Models;
 using Steam_TripleBrain.MappingProfiles;
+using Steam_TripleBrain.Models;
+using Steam_TripleBrain.Profiles;
 
-namespace Steam_TripleBrain.CQRS.Handler.Orders
+namespace Steam_TripleBrain.CQRS.Handler.Order
 {
-    public class CreateOrderHandler : IRequestHandler<CreateOrderCommand, Result<Order>>
+    public class CreateOrderHandler : IRequestHandler<CreateOrderCommand, Result<OrderViewProfile>>
     {
         private readonly AppDbContext _context;
         private readonly ILogger<CreateOrderHandler> _logger;
@@ -18,21 +21,25 @@ namespace Steam_TripleBrain.CQRS.Handler.Orders
             _logger = logger;
         }
 
-        public async Task<Result<Order>> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
+        public async Task<Result<OrderViewProfile>> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
         {
-            if (request == null)
-                return Result<Order>.Failure("Request is null");
-
-            UpdateOrderCommand request2 = request;
-            var order = new Order
+            _logger.LogInformation("#### CreateOrder start work");
+            var exists = await _context.Orders.AnyAsync(g => g.Id == request.Id, cancellationToken);
+            if (exists)
             {
-                order.
+                _logger.LogInformation("#### CreateOrder: object with this allready exists");
+                return Result<OrderViewProfile>.Failure($"OrderItem with {request.Id}");
             }
 
-            _context.Orders.Add(order);
+            var order = OrderMappingProfile.ToOrder(request);
+
+            await _context.AddAsync(order);
             await _context.SaveChangesAsync(cancellationToken);
 
-            return Result<Order>.Success(order);
+            var orderProfile = OrderMappingProfile.ToProfile(order);
+
+            return Result<OrderViewProfile>.Success(orderProfile, "Order item created successfully.");
         }
     }
+
 }

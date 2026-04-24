@@ -30,7 +30,7 @@ namespace Steam_TripleBrain.Data
         //Tag
         //public DbSet<Tag> Tags => Set<Tag>();
         //ImageUrl
-        public DbSet<ImageUrl> ImageUrls => Set<ImageUrl>();
+        //public DbSet<ImageUrl> ImageUrls => Set<ImageUrl>();
         //WishList
         public DbSet<WishList> WishLists => Set<WishList>();
         //FriendShip
@@ -76,16 +76,16 @@ namespace Steam_TripleBrain.Data
                 entity.HasKey(g => g.Id);
 
                 // Poster: Game -> ImageUrl (one-to-one like relationship from Game to ImageUrl via PosterId)
-                entity.HasOne(g => g.Poster)
-                      .WithMany()
-                      .HasForeignKey("PosterId")
-                      .OnDelete(DeleteBehavior.Cascade);
+                //entity.HasOne(g => g.Poster)
+                //      .WithMany()
+                //      .HasForeignKey("PosterId")
+                //      .OnDelete(DeleteBehavior.Cascade);
 
                 // Images: Game -> ImageUrl (one-to-many)
-                entity.HasMany(g => g.Images)
-                      .WithOne()
-                      .HasForeignKey("GameId")
-                      .OnDelete(DeleteBehavior.Restrict);
+                //entity.HasMany(g => g.Images)
+                //      .WithOne()
+                //      .HasForeignKey("GameId")
+                //      .OnDelete(DeleteBehavior.Restrict);
 
                 // Genres: Game -> Genre (one-to-many)
                 entity.HasMany(g => g.Genres)
@@ -110,16 +110,16 @@ namespace Steam_TripleBrain.Data
             });
 
             // ImageUrl entity configuration
-            modelBuilder.Entity<ImageUrl>(entity =>
-            {
-                entity.HasKey(i => i.Id);
+            //modelBuilder.Entity<ImageUrl>(entity =>
+            //{
+            //    entity.HasKey(i => i.Id);
 
-                // ImageUrl may belong to a Game (as part of Images collection)
-                entity.HasOne<Game>()
-                      .WithMany(g => g.Images)
-                      .HasForeignKey("GameId")
-                      .OnDelete(DeleteBehavior.Restrict);
-            });
+            //    // ImageUrl may belong to a Game (as part of Images collection)
+            //    entity.HasOne<Game>()
+            //          .WithMany(g => g.Images)
+            //          .HasForeignKey("GameId")
+            //          .OnDelete(DeleteBehavior.Restrict);
+            //});
 
             // Genre entity configuration
             modelBuilder.Entity<Genre>(entity =>
@@ -164,10 +164,10 @@ namespace Steam_TripleBrain.Data
                 entity.HasKey(u => u.Id);
 
                 // User icon (ImageUrl)
-                entity.HasOne(u => u.Icon)
-                      .WithMany()
-                      .HasForeignKey("IconId")
-                      .OnDelete(DeleteBehavior.Restrict);
+                //entity.HasOne(u => u.Icon)
+                //      .WithMany()
+                //      .HasForeignKey("IconId")
+                //      .OnDelete(DeleteBehavior.Restrict);
 
                 // Purchased games
                 entity.HasMany(u => u.PurchasedGames)

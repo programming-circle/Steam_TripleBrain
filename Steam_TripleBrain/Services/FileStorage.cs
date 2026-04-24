@@ -20,15 +20,16 @@
 
         public async Task<string> SaveProductImageAsync(IFormFile file, CancellationToken ct = default)
         {
+            
             if (file == null || file.Length == 0)
             {
                 throw new ArgumentNullException(nameof(file));
             }
 
-            _logger.LogInformation("Saving product image: {FileName}, Size: {Size} bytes", file.FileName, file.Length);
+            _logger.LogInformation("IMG### Saving product image: {FileName}, Size: {Size} bytes", file.FileName, file.Length);
             if (file.Length > MaxBytes)
             {
-                _logger.LogInformation("Image is too large: {FileName}, Size: {Size} bytes", file.FileName, file.Length);
+                _logger.LogInformation("IMG### Image is too large: {FileName}, Size: {Size} bytes", file.FileName, file.Length);
                 throw new InvalidOperationException("Image is too large, must be less then 3 MB");
             }
 
@@ -55,10 +56,10 @@
 
         public Task DeleteAsync(string? relativePath, CancellationToken ct = default)
         {
-            _logger.LogInformation("Deleting file at relative path: {RelativePath}", relativePath);
+            _logger.LogInformation("IMG### Deleting file at relative path: {RelativePath}", relativePath);
             if (string.IsNullOrWhiteSpace(relativePath))
             {
-                _logger.LogInformation("No relative path provided for deletion.");
+                _logger.LogInformation("IMG### No relative path provided for deletion.");
                 return Task.CompletedTask;
             }
             var webRootPath = _env.WebRootPath;

@@ -54,7 +54,7 @@ namespace Steam_TripleBrain.CQRS.Handler.Game
                         Rating = g.Rating,
                         Price = g.Price,
                         Discount = g.Discount,
-                        Poster = g.Poster == null ? null : new ImageUrlViewProfile { Id = g.Poster.Id, Url = g.Poster.Url }
+                        Poster = g.Poster ?? null
                     })
                     .ToListAsync(cancellationToken);
 

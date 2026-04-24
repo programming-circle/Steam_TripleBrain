@@ -55,7 +55,7 @@ namespace Steam_TripleBrain.CQRS.Handler.Game
             //Possibly could work, need to be tested.
             var game = GameMappingProfile.ToGame(request);
 
-            _context.Games.Add(game);
+            await _context.Games.AddAsync(game);
             await _context.SaveChangesAsync(cancellationToken);
             
             //var gameViewProfile = new GameViewProfile()
