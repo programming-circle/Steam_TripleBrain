@@ -37,6 +37,7 @@ builder.Services.AddCors(options =>
     });
 });
 
+builder.Services.AddScoped<IFileStorageService, FileStorages>();
 
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
