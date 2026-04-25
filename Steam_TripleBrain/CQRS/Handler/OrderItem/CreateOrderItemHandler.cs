@@ -43,7 +43,9 @@ namespace Steam_TripleBrain.CQRS.Handler.OrderItem
 
             var orderItemProfile = OrderItemMappingProfile.ToProfile(orderItem);
 
-            return Result<OrderItemViewProfile>.Success(orderItemProfile, "Order item created successfully.");
-        }
+            _logger.LogInformation("CreateOrderItem
     }
 }
+: Order item created successfully");
+            return Result<OrderItemViewProfile>.Success(orderItemProfile, "Order item created successfully.");
+        }

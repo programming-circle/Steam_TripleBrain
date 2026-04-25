@@ -1,6 +1,10 @@
-﻿namespace Steam_TripleBrain.CQRS.Query.OrderItem
+﻿using MediatR;
+using Steam_TripleBrain.Models;
+using Steam_TripleBrain.Profiles;
+
+namespace Steam_TripleBrain.CQRS.Query.OrderItem
 {
-    public class OrderItemGetAllQuery
+    public class OrderItemGetAllQuery : IRequest<Result<List<OrderItemViewProfile>>>
     {
     }
 }
