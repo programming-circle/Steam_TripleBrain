@@ -28,9 +28,14 @@ namespace Steam_TripleBrain.CQRS.Handler.OrderItem
             if(exists)
             {
                 _logger.LogInformation("#### CreateOrderItem: object with this allready exists");
-                return Result<OrderItemViewProfile>.Failure($"OrderItem with {request.GameId}");
+                return Result<OrderItemViewProfile>.Failure($"OrderItem with {request.Id}, not exists");
             }
-
+            var existsGame = await _context.Games.AnyAsync(g => g.Id == request.GameId, cancellationToken);
+            if(!existsGame)
+            {
+                _logger.LogInformation("#### CreateOrderItem: game with id {request.GameId} not exists", request.GameId);
+                return Result<OrderItemViewProfile>.Failure($"Game with {request.GameId} not exists");
+            }
             var orderItem = OrderItemMappingProfile.ToOrderItem(request);
 
             await _context.AddAsync(orderItem);

@@ -23,6 +23,7 @@ namespace Steam_TripleBrain.CQRS.Command.OrderItem
         public CreateOrderItemValidator() {
             RuleFor(x => x.OrderId).NotEmpty().WithMessage("OrderId Empty. ");
             RuleFor(x => x.GameId).NotEmpty().WithMessage("GameId empty. ");
+            
             RuleFor(x => x.PriceOfItem).NotEmpty().WithMessage("Price is empty");
         }
     }

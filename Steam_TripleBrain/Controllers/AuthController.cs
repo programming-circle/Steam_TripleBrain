@@ -57,7 +57,7 @@ namespace Steam_TripleBrain.Controllers
             });
         }
 
-        [HttpPost("login")]
+        [HttpGet("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest login)
         {
             if (login == null || !ModelState.IsValid)

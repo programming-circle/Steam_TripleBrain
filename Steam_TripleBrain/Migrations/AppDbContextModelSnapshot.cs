@@ -238,12 +238,16 @@ namespace Steam_TripleBrain.Migrations
                     b.Property<int>("Discount")
                         .HasColumnType("int");
 
+                    b.PrimitiveCollection<string>("Images")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("PosterId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Poster")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
@@ -258,8 +262,6 @@ namespace Steam_TripleBrain.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("PosterId");
 
                     b.HasIndex("UserId");
 
@@ -286,26 +288,6 @@ namespace Steam_TripleBrain.Migrations
                     b.HasIndex("GameId");
 
                     b.ToTable("Genres");
-                });
-
-            modelBuilder.Entity("Steam_TripleBrain.Models.ImageUrl", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("GameId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Url")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GameId");
-
-                    b.ToTable("ImageUrls");
                 });
 
             modelBuilder.Entity("Steam_TripleBrain.Models.Order", b =>
@@ -423,8 +405,8 @@ namespace Steam_TripleBrain.Migrations
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("IconId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Icon")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Password")
                         .HasColumnType("nvarchar(max)");
@@ -433,8 +415,6 @@ namespace Steam_TripleBrain.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("IconId");
 
                     b.ToTable("Users");
                 });
@@ -506,12 +486,6 @@ namespace Steam_TripleBrain.Migrations
 
             modelBuilder.Entity("Steam_TripleBrain.Models.Game", b =>
                 {
-                    b.HasOne("Steam_TripleBrain.Models.ImageUrl", "Poster")
-                        .WithMany()
-                        .HasForeignKey("PosterId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Steam_TripleBrain.Models.User", null)
                         .WithMany("PurchasedGames")
                         .HasForeignKey("UserId")
@@ -521,22 +495,12 @@ namespace Steam_TripleBrain.Migrations
                         .WithMany("WishGames")
                         .HasForeignKey("WishListId")
                         .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("Poster");
                 });
 
             modelBuilder.Entity("Steam_TripleBrain.Models.Genre", b =>
                 {
                     b.HasOne("Steam_TripleBrain.Models.Game", null)
                         .WithMany("Genres")
-                        .HasForeignKey("GameId")
-                        .OnDelete(DeleteBehavior.Restrict);
-                });
-
-            modelBuilder.Entity("Steam_TripleBrain.Models.ImageUrl", b =>
-                {
-                    b.HasOne("Steam_TripleBrain.Models.Game", null)
-                        .WithMany("Images")
                         .HasForeignKey("GameId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
@@ -561,16 +525,6 @@ namespace Steam_TripleBrain.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Steam_TripleBrain.Models.User", b =>
-                {
-                    b.HasOne("Steam_TripleBrain.Models.ImageUrl", "Icon")
-                        .WithMany()
-                        .HasForeignKey("IconId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("Icon");
-                });
-
             modelBuilder.Entity("Steam_TripleBrain.Data.AppUser", b =>
                 {
                     b.Navigation("RefreshTokens");
@@ -579,8 +533,6 @@ namespace Steam_TripleBrain.Migrations
             modelBuilder.Entity("Steam_TripleBrain.Models.Game", b =>
                 {
                     b.Navigation("Genres");
-
-                    b.Navigation("Images");
                 });
 
             modelBuilder.Entity("Steam_TripleBrain.Models.Order", b =>

@@ -81,6 +81,22 @@ namespace Steam_TripleBrain.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Icon = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DateOfReg = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "WishLists",
                 columns: table => new
                 {
@@ -245,7 +261,8 @@ namespace Steam_TripleBrain.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PosterId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Poster = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Images = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Rating = table.Column<double>(type: "float", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
@@ -258,6 +275,12 @@ namespace Steam_TripleBrain.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Games", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Games_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Games_WishLists_WishListId",
                         column: x => x.WishListId,
@@ -281,47 +304,6 @@ namespace Steam_TripleBrain.Migrations
                         name: "FK_Genres_Games_GameId",
                         column: x => x.GameId,
                         principalTable: "Games",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ImageUrls",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Url = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    GameId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ImageUrls", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ImageUrls_Games_GameId",
-                        column: x => x.GameId,
-                        principalTable: "Games",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Users",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IconId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    DateOfReg = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Users", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Users_ImageUrls_IconId",
-                        column: x => x.IconId,
-                        principalTable: "ImageUrls",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -366,11 +348,6 @@ namespace Steam_TripleBrain.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Games_PosterId",
-                table: "Games",
-                column: "PosterId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Games_UserId",
                 table: "Games",
                 column: "UserId");
@@ -383,11 +360,6 @@ namespace Steam_TripleBrain.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Genres_GameId",
                 table: "Genres",
-                column: "GameId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ImageUrls_GameId",
-                table: "ImageUrls",
                 column: "GameId");
 
             migrationBuilder.CreateIndex(
@@ -405,40 +377,11 @@ namespace Steam_TripleBrain.Migrations
                 name: "IX_RefreshTokens_UserId",
                 table: "RefreshTokens",
                 column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Users_IconId",
-                table: "Users",
-                column: "IconId");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Games_ImageUrls_PosterId",
-                table: "Games",
-                column: "PosterId",
-                principalTable: "ImageUrls",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Games_Users_UserId",
-                table: "Games",
-                column: "UserId",
-                principalTable: "Users",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Games_ImageUrls_PosterId",
-                table: "Games");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_Users_ImageUrls_IconId",
-                table: "Users");
-
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -470,16 +413,13 @@ namespace Steam_TripleBrain.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
+                name: "Games");
+
+            migrationBuilder.DropTable(
                 name: "Orders");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
-
-            migrationBuilder.DropTable(
-                name: "ImageUrls");
-
-            migrationBuilder.DropTable(
-                name: "Games");
 
             migrationBuilder.DropTable(
                 name: "Users");
