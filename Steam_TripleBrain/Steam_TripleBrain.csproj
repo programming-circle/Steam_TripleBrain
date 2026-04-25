@@ -111,7 +111,6 @@
 	  <Compile Remove="Controllers\DLCController.cs" />
 	  <Compile Remove="Controllers\GenreController.cs" />
 	  <Compile Remove="Controllers\ImageUrlController.cs" />
-	  <Compile Remove="Controllers\OrderController.cs" />
 	  <Compile Remove="Controllers\ProfileController.cs" />
 	  <Compile Remove="Controllers\ReviewController.cs" />
 	  <Compile Remove="Controllers\TagController.cs" />

@@ -13,9 +13,9 @@ namespace Steam_TripleBrain.CQRS.Handler.OrderItem
     public class CreateOrderItemHandler : IRequestHandler<CreateOrderItemCommand , Result<OrderItemViewProfile>>
     {
         private readonly AppDbContext _context;
-        private readonly ILogger<CreateGameHandler> _logger;
+        private readonly ILogger<CreateOrderItemHandler> _logger;
 
-        public CreateOrderItemHandler(AppDbContext context, ILogger<CreateGameHandler> logger)
+        public CreateOrderItemHandler(AppDbContext context, ILogger<CreateOrderItemHandler> logger)
         {
             _context = context;
             _logger = logger;
@@ -43,9 +43,9 @@ namespace Steam_TripleBrain.CQRS.Handler.OrderItem
 
             var orderItemProfile = OrderItemMappingProfile.ToProfile(orderItem);
 
-            _logger.LogInformation("CreateOrderItem
-    }
-}
-: Order item created successfully");
+            _logger.LogInformation("CreateOrderItem : Order item created successfully");         
             return Result<OrderItemViewProfile>.Success(orderItemProfile, "Order item created successfully.");
         }
+
+    }
+}
