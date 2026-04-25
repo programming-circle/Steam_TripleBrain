@@ -23,11 +23,11 @@ namespace Steam_TripleBrain.CQRS.Handler.OrderItem
 
         public async Task<Result<OrderItemViewProfile>> Handle(CreateOrderItemCommand request , CancellationToken cancellationToken)
         {
-            _logger.LogInformation("#### CreateOrderItem start work");
+            _logger.LogInformation("CreateOrderItem start work");
             var exists = await _context.OrderItems.AnyAsync(g => g.Id == request.Id, cancellationToken);
             if(exists)
             {
-                _logger.LogInformation("#### CreateOrderItem: object with this allready exists");
+                _logger.LogInformation("CreateOrderItem: object with this allready exists");
                 return Result<OrderItemViewProfile>.Failure($"OrderItem with {request.GameId}");
             }
 
@@ -38,6 +38,7 @@ namespace Steam_TripleBrain.CQRS.Handler.OrderItem
 
             var orderItemProfile = OrderItemMappingProfile.ToProfile(orderItem);
 
+            _logger.LogInformation("CreateOrderItem: Order item created successfully");
             return Result<OrderItemViewProfile>.Success(orderItemProfile, "Order item created successfully.");
         }
     }
