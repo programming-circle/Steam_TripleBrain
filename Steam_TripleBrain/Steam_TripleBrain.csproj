@@ -140,6 +140,8 @@
 		<Compile Include="CQRS\Query\Game\GetGameByIdQueryRequest.cs" />
 		<Compile Include="CQRS\Query\OrderItem\OrderItemDeleteByIdQuery.cs" />
 		<Compile Include="CQRS\Query\OrderItem\OrderItemGetAllQuery.cs" />
+		<Compile Include="CQRS\Query\Order\GetOrderByIdQueryRequest.cs" />
+		<Compile Include="CQRS\Query\Order\OrderDeleteByIdQueryRequest.cs" />
 	</ItemGroup>
 
 	<ItemGroup>

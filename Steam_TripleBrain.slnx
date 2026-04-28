@@ -1,3 +1,7 @@
 <Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="Steam_TripleBrain/CQRS/Query/Order/GetOrderByIdQueryRequest.cs" />
+    <File Path="Steam_TripleBrain/CQRS/Query/Order/OrderDeleteByIdQueryRequest.cs" />
+  </Folder>
   <Project Path="Steam_TripleBrain/Steam_TripleBrain.csproj" />
 </Solution>
