@@ -362,3 +362,5 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /Steam_TripleBrain/appsettings.json
+/Steam_TripleBrain/Migrations/20260424171845_Init.cs
+/Steam_TripleBrain/Migrations/AppDbContextModelSnapshot.cs
