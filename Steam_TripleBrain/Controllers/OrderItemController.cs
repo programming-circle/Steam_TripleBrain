@@ -26,7 +26,7 @@ namespace Steam_TripleBrain.Controllers
             return View();
         }
 
-        [HttpPost("create-game")]
+        [HttpPost("create-order-item")]
         public async Task<IActionResult> CreateAsync([FromBody] CreateOrderItemCommand request)
         {
             _logger.LogInformation("Creating OrderItem started");

@@ -28,7 +28,7 @@ namespace Steam_TripleBrain.CQRS.Handler.Order
             if (exists)
             {
                 _logger.LogInformation("#### CreateOrder: object with this allready exists");
-                return Result<OrderViewProfile>.Failure($"OrderItem with {request.Id}");
+                return Result<OrderViewProfile>.Failure($"Order with {request.Id}, not exists");
             }
 
             var order = OrderMappingProfile.ToOrder(request);
