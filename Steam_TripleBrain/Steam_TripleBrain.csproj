@@ -115,7 +115,6 @@
 	  <Compile Remove="Controllers\ReviewController.cs" />
 	  <Compile Remove="Controllers\TagController.cs" />
 	  <Compile Remove="Controllers\WishListController.cs" />
-	  <Compile Remove="MappingProfiles\GenreMappingProfile.cs" />
 	  <Compile Remove="MappingProfiles\ImageMappingProfile.cs" />
 	  <Compile Remove="MappingProfiles\MappingProfile.cs" />
 	  <Compile Remove="Models\DLC.cs" />
@@ -175,7 +174,6 @@
 
 	<ItemGroup>
 	  <None Include="CQRS\Handler\Auth\LoginProfileHandler.cs" />
-	  <None Include="MappingProfiles\GenreMappingProfile.cs" />
 	  <None Include="MappingProfiles\MappingProfile.cs" />
 	  <None Include="Models\DLC.cs" />
 	  <None Include="Models\FriendShip.cs" />
@@ -201,6 +199,9 @@
 	  <Compile Remove="CQRS\Handler\Auth\GetProfileHandler.cs" />
 	  <Compile Remove="CQRS\Handler\Auth\GetTokenLogsHandler.cs" />
 	  <Compile Remove="CQRS\Handler\Auth\LoginProfileHandler.cs" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="CQRS\Command\NewFolder\" />
 	</ItemGroup>
 
 </Project>
