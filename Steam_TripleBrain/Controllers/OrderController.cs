@@ -30,12 +30,12 @@ namespace Steam_TripleBrain.Controllers
         [HttpPost("create-order")]
         public async Task<IActionResult> CreateAsync([FromBody] CreateOrderCommand request)
         {
-            _logger.LogInformation("#### Creating Order started");
+            _logger.LogInformation("Creating Order started");
             var result = await _mediatr.Send(request);
 
             if (!result.IsSuccess)
             {
-                _logger.LogInformation("#### OrderItem created unsuccessfully");
+                _logger.LogInformation("OrderItem created unsuccessfully");
                 return BadRequest(result);
             }
             return Ok(result);

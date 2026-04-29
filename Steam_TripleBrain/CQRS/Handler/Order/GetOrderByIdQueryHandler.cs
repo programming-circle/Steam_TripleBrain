@@ -28,6 +28,7 @@ namespace Steam_TripleBrain.CQRS.Handler.Order
                 _logger.LogInformation("No order with {order.Id} exists", request.Id);
                 return Result<OrderViewProfile>.Failure($"order with id: {request.Id} not exist");
             }
+            _logger.LogInformation("Order with {order.Id} exists", request.Id);
             var orderViewProfile = OrderMappingProfile.ToProfile(order);
             return Result<OrderViewProfile>.Success(orderViewProfile, "Order created successfully.");
         }

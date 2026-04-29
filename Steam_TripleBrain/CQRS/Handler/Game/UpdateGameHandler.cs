@@ -60,11 +60,11 @@ namespace Steam_TripleBrain.CQRS.Handler.Game
             // Update collections: replace with incoming lists (defensive copy)
             game.Images = request.Images ?? null;
 
-            game.Genres = request.Genres?.Select(g => new Genre
+            game.Genres = request.Genres?.Select(g => new GenreViewProfile
             {
                 Id = g.Id == Guid.Empty ? Guid.NewGuid() : g.Id,
                 Name = g.Name
-            }).ToList() ?? new List<Genre>();
+            }).ToList() ?? new List<GenreViewProfile>();
             /*
             game.Tags = request.Tags?.Select(t => new Tag
             {

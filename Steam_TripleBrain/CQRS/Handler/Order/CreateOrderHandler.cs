@@ -23,11 +23,11 @@ namespace Steam_TripleBrain.CQRS.Handler.Order
 
         public async Task<Result<OrderViewProfile>> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("#### CreateOrder start work");
+            _logger.LogInformation("CreateOrder start work");
             var exists = await _context.Orders.AnyAsync(g => g.Id == request.Id, cancellationToken);
             if (exists)
             {
-                _logger.LogInformation("#### CreateOrder: object with this allready exists");
+                _logger.LogInformation("CreateOrder: object with this allready exists");
                 return Result<OrderViewProfile>.Failure($"Order with {request.Id}, not exists");
             }
 

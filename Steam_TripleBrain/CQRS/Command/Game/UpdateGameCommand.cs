@@ -16,7 +16,7 @@ namespace Steam_TripleBrain.CQRS.Command.Game
         public double Rating { get; set; }
 
         public string Description { get; set; }
-        public List<Genre> Genres { get; set; }
+        public List<GenreViewProfile> Genres { get; set; }
 
         //public List<Tag>? Tags { get; set; }
 

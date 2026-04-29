@@ -138,6 +138,8 @@
 		<Compile Include="CQRS\Query\Game\DeleteGameByIdQueryRequest.cs" />
 		<Compile Include="CQRS\Query\Game\GetAllGamesQueryRequest.cs" />
 		<Compile Include="CQRS\Query\Game\GetGameByIdQueryRequest.cs" />
+		<Compile Include="CQRS\Query\Genre\GenreDeleteByIdQueryRequest.cs" />
+		<Compile Include="CQRS\Query\Genre\GetGenreByIdQueryRequest.cs" />
 		<Compile Include="CQRS\Query\OrderItem\OrderItemDeleteByIdQuery.cs" />
 		<Compile Include="CQRS\Query\OrderItem\OrderItemGetAllQuery.cs" />
 		<Compile Include="CQRS\Query\Order\GetOrderByIdQueryRequest.cs" />
