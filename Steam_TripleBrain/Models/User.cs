@@ -1,4 +1,6 @@
-﻿namespace Steam_TripleBrain.Models
+﻿using Steam_TripleBrain.Profiles.Tokens;
+
+namespace Steam_TripleBrain.Models
 {
     public class User
     {
@@ -7,12 +9,18 @@
         
         public string? Email { get; set; }
         public string? Password { get; set; }
+        
+        public DateTime? BirthDate { get; set; }
 
         public string? Icon { get; set; }
 
-        public DateTime DateOfReg {  get; set; }
+        public string Role { get; set; }
+        public DateTime CreatedAt {  get; set; } = DateTime.Now;
+        public DateTime? DeletedAt { get; set; }
 
         public List<Game>? PurchasedGames { get; set; }
+
+        public List<TokenJournal>? TokenJournals { get; set; }
         // public List<DLC>? DLCs { get; set; }
 
         //Planing of adding roles for users, but not sure if it will be needed in the future

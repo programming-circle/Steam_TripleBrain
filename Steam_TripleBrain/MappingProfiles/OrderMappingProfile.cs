@@ -23,11 +23,11 @@ namespace Steam_TripleBrain.MappingProfiles
                 {
                     Id = i.Id == Guid.Empty ? Guid.NewGuid() : i.Id,
                     OrderId = id,
-                    GameId = i.Items?.Select(i => i.GameId).FirstOrDefault(), //Could be problem , if FirstOrDefault, compilator could take only first item .
+                    GameId = i.GameId,
                     //DLCId = i.DLCId,
-                    PriceOfItem = i.Items.Select(i => i.PriceOfItem).FirstOrDefault(),
+                    PriceOfItem = i.PriceOfItem,
                 }).ToList() ?? new List<OrderItem>(),
-                TotalPrice = cmd.TotalPrice,
+                TotalPrice = cmd.Items?.Sum(i => i.PriceOfItem) ?? 0,
             };
 
         }

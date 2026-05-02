@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Steam_TripleBrain.Models;
+using Steam_TripleBrain.Profiles.Tokens;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Steam_TripleBrain.Data
@@ -39,7 +40,8 @@ namespace Steam_TripleBrain.Data
         //public DbSet<Review> Reviews => Set<Review>();
 
         //Tokens
-        public DbSet<RefreshToken> RefreshTokens { get; set; }
+        public DbSet<JwtToken> JwtTokens { get; set; }
+        public DbSet<TokenJournal> TokenJournals { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -7,6 +7,7 @@ using Steam_TripleBrain.Data;
 using Steam_TripleBrain.MappingProfiles;
 using Steam_TripleBrain.Models;
 using Steam_TripleBrain.Profiles;
+using Steam_TripleBrain.Services;
 
 namespace Steam_TripleBrain.CQRS.Handler.Order
 {
@@ -14,15 +15,20 @@ namespace Steam_TripleBrain.CQRS.Handler.Order
     {
         private readonly AppDbContext _context;
         private readonly ILogger<CreateOrderHandler> _logger;
+        private readonly TokenService _token;
 
-        public CreateOrderHandler(AppDbContext context, ILogger<CreateOrderHandler> logger)
+        public CreateOrderHandler(AppDbContext context
+            , ILogger<CreateOrderHandler> logger , TokenService token)
         {
             _context = context;
             _logger = logger;
+            _token = token;
         }
 
         public async Task<Result<OrderViewProfile>> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
         {
+
+            var decodeResult = await _token.
             _logger.LogInformation("CreateOrder start work");
             var exists = await _context.Orders.AnyAsync(g => g.Id == request.Id, cancellationToken);
             if (exists)

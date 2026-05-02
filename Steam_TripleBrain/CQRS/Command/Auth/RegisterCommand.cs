@@ -4,7 +4,7 @@ using Steam_TripleBrain.Models;
 
 namespace Steam_TripleBrain.CQRS.Command.Auth
 {
-    public class RegisterCommand : IRequest<AuthResponse>
+    public class RegisterCommand : IRequest<JwtToken>
     {
         public Guid Id { get; set; }
         public string Username { get; set; }

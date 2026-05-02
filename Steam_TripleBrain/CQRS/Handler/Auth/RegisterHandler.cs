@@ -10,7 +10,7 @@ using Steam_TripleBrain.Services;
 
 namespace Steam_TripleBrain.CQRS.Handler.Auth
 {
-    public class RegisterHandler : IRequestHandler<RegisterCommand, AuthResponse>
+    public class RegisterHandler : IRequestHandler<RegisterCommand, JwtToken>
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly ITokenService _tokenService;
@@ -27,7 +27,7 @@ namespace Steam_TripleBrain.CQRS.Handler.Auth
         }
 
         //Methor to handle registration
-        public async Task<AuthResponse> Handle(RegisterCommand request, CancellationToken cancellationToken)
+        public async Task<JwtToken> Handle(RegisterCommand request, CancellationToken cancellationToken)
         {
 
             _logger.LogInformation("### Handler Registration");
@@ -81,7 +81,7 @@ namespace Steam_TripleBrain.CQRS.Handler.Auth
             var access = await _tokenService.CreateAccessTokenAsync(appUser);
             var refresh = await _tokenService.CreateRefreshTokenAsync(appUser);
 
-            return new AuthResponse
+            return new JwtToken
             {
                 Accesstoken = access?.Token,
                 AccessExpiresAtUtc = access?.ExpiresAtUtc ?? DateTime.UtcNow,

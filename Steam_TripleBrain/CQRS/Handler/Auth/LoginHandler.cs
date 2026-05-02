@@ -3,12 +3,13 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Steam_TripleBrain.CQRS.Command.Auth;
 using Steam_TripleBrain.Data;
+using Steam_TripleBrain.Models;
 using Steam_TripleBrain.Profiles.Tokens;
 using Steam_TripleBrain.Services;
 
 namespace Steam_TripleBrain.CQRS.Handler.Auth
 {
-    public class LoginHandler : IRequestHandler<LoginCommand, AuthResponse>
+    public class LoginHandler : IRequestHandler<LoginCommand, JwtToken>
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly ITokenService _tokenService;
@@ -21,7 +22,7 @@ namespace Steam_TripleBrain.CQRS.Handler.Auth
             _logger = logger;
         }
 
-        public async Task<AuthResponse> Handle(LoginCommand request, CancellationToken cancellationToken)
+        public async Task<JwtToken> Handle(LoginCommand request, CancellationToken cancellationToken)
         {
             _logger.LogInformation("### Handler Login for email: {Email}", request.Email);
 
@@ -53,7 +54,7 @@ namespace Steam_TripleBrain.CQRS.Handler.Auth
             var access = await _tokenService.CreateAccessTokenAsync(user);
             var refresh = await _tokenService.CreateRefreshTokenAsync(user);
 
-            return new AuthResponse
+            return new JwtToken
             {
                 Accesstoken = access?.Token,
                 AccessExpiresAtUtc = access?.ExpiresAtUtc ?? DateTime.UtcNow,

@@ -44,27 +44,27 @@ namespace Steam_TripleBrain.CQRS.Handler.Game
             }
 
             // Update scalar properties
-            game.Name = request.Name;
-            game.Rating = request.Rating;
-            game.Description = request.Description;
-            game.Price = request.Price;
-            game.Discount = request.Discount;
-            game.Developer = request.Developer;
+            //game.Name = request.Name;
+            //game.Rating = request.Rating;
+            //game.Description = request.Description;
+            //game.Price = request.Price;
+            //game.Discount = request.Discount;
+            //game.Developer = request.Developer;
 
             // Update poster
-            if (request.Poster != null)
-            {
-                game.Poster = request.Poster;
-            }
+            //if (request.Poster != null)
+            //{
+            //    game.Poster = request.Poster;
+            //}
 
             // Update collections: replace with incoming lists (defensive copy)
-            game.Images = request.Images ?? null;
+            //game.Images = request.Images ?? null;
 
-            game.Genres = request.Genres?.Select(g => new GenreViewProfile
-            {
-                Id = g.Id == Guid.Empty ? Guid.NewGuid() : g.Id,
-                Name = g.Name
-            }).ToList() ?? new List<GenreViewProfile>();
+            //game.Genres = request.Genres?.Select(g => new GenreViewProfile
+            //{
+            //    Id = g.Id == Guid.Empty ? Guid.NewGuid() : g.Id,
+            //    Name = g.Name
+            //}).ToList() ?? new List<GenreViewProfile>();
             /*
             game.Tags = request.Tags?.Select(t => new Tag
             {

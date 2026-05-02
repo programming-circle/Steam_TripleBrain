@@ -10,8 +10,9 @@ namespace Steam_TripleBrain.CQRS.Command.Order
         public Guid Id { get; set; }
         public Guid UserId { get; set; }
         public DateTime CreatedAt { get; set; }
+        public List<OrderItemViewProfile> Items { get; set; } = new();
+
         public decimal TotalPrice { get; set; }
-        public List<OrderViewProfile> Items { get; set; }
     }
 
     public class CreateOrderValidator : AbstractValidator<CreateOrderCommand>
