@@ -37,7 +37,20 @@ builder.Services.AddCors(options =>
     });
 });
 
-builder.Services.AddScoped<IFileStorageService, FileStorages>();
+builder.Services.AddScoped<IFileStorageService, FileStorage>();
+
+builder.Services.AddHttpClient(FileStorage.HttpClientName, client =>
+{
+    client.Timeout = TimeSpan.FromMinutes(1);
+});
+
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.Configure<Steam_TripleBrain.Options.Token.TokenOptions>(options =>
+{
+    options.SecretKey = builder.Configuration["Jwt:Key"]
+        ?? throw new InvalidOperationException("Jwt:Key is required in configuration.");
+});
 
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
@@ -88,16 +101,16 @@ builder.Services.AddAuthentication(options =>
 })
 .AddJwtBearer(options =>
 {
+    var jwtKey = builder.Configuration["Jwt:Key"]
+        ?? throw new InvalidOperationException("Jwt:Key is required.");
     options.TokenValidationParameters = new TokenValidationParameters
     {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = builder.Configuration["Jwt:Issuer"],
-        ValidAudience = builder.Configuration["Jwt:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(           
-            Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtKey)),
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ValidateLifetime = true,
+        ClockSkew = TimeSpan.Zero
     };
 });
 
@@ -114,7 +127,7 @@ builder.Services.AddIdentityCore<AppUser>(options =>
     .AddEntityFrameworkStores<AppDbContext>();
 
 builder.Services.AddScoped<ITokenService, TokenService>();
-
+builder.Services.AddHttpContextAccessor();
 
 
 var app = builder.Build();

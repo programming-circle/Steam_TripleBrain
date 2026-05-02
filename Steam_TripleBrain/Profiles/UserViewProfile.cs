@@ -12,7 +12,7 @@ namespace Steam_TripleBrain.Profiles
 
         public string? Icon { get; set; }
 
-        public DateTime DateOfReg { get; set; }
+        public DateTime CreatedAt { get; set; }
 
         public List<Game> PurchasedGames { get; set; }
         // public List<DLC> DLCs { get; set; }

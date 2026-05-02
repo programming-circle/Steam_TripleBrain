@@ -42,6 +42,7 @@ namespace Steam_TripleBrain.Data
         //Tokens
         public DbSet<JwtToken> JwtTokens { get; set; }
         public DbSet<TokenJournal> TokenJournals { get; set; }
+        public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

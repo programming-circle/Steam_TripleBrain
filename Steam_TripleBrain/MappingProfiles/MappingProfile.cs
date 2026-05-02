@@ -111,7 +111,7 @@ namespace Steam_TripleBrain.MappingProfiles
                 UserName = cmd.UserName,
                 Email = cmd.Email,
                 Password = cmd.Password,
-                DateOfReg = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow
             };
         }
 
@@ -135,7 +135,7 @@ namespace Steam_TripleBrain.MappingProfiles
                 Email = user.Email ?? string.Empty,
                 Password = user.Password ?? string.Empty,
                 Icon = user.Icon == null ? null : new ImageUrlViewProfile { Id = user.Icon.Id, Url = user.Icon.Url },
-                DateOfReg = user.DateOfReg,
+                CreatedAt = user.CreatedAt,
                 PurchasedGames = user.PurchasedGames ?? new List<Game>(),
                 DLCs = user.DLCs ?? new List<DLC>()
             };

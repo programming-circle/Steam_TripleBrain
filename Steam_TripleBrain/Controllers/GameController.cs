@@ -5,7 +5,6 @@ using Steam_TripleBrain.CQRS.Handler.Game;
 using Steam_TripleBrain.CQRS.Query.Game;
 using Steam_TripleBrain.Data;
 using Steam_TripleBrain.Profiles;
-
 namespace Steam_TripleBrain.Controllers
 {
     [Route("api/[controller]")]
@@ -54,11 +53,11 @@ namespace Steam_TripleBrain.Controllers
         }
 
         [HttpPost("create-game")]
-        public async Task<IActionResult> CreateAsync([FromBody]CreateGameCommand request)
+        public async Task<IActionResult> CreateAsync([FromBody] CreateGameCommand request)
         {
             var result = await _mediatr.Send(request);
 
-            if(!result.IsSuccess)
+            if (!result.IsSuccess)
             {
                 return BadRequest(result);
             }

@@ -9,6 +9,6 @@ namespace Steam_TripleBrain.Models
         public DateTime ExpireAtUtc { get; set; }
         public bool IsRevoke { get; set; }
         public Guid UserId { get; set; }
-        public AppUser User { get; set; }
+        public AppUser? User { get; set; }
     }
 }

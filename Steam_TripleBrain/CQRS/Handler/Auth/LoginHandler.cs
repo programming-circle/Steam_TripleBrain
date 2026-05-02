@@ -1,15 +1,13 @@
 using MediatR;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Steam_TripleBrain.CQRS.Command.Auth;
 using Steam_TripleBrain.Data;
-using Steam_TripleBrain.Models;
 using Steam_TripleBrain.Profiles.Tokens;
 using Steam_TripleBrain.Services;
 
 namespace Steam_TripleBrain.CQRS.Handler.Auth
 {
-    public class LoginHandler : IRequestHandler<LoginCommand, JwtToken>
+    public class LoginHandler : IRequestHandler<LoginCommand, JwtTokenProfile?>
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly ITokenService _tokenService;
@@ -22,17 +20,13 @@ namespace Steam_TripleBrain.CQRS.Handler.Auth
             _logger = logger;
         }
 
-        public async Task<JwtToken> Handle(LoginCommand request, CancellationToken cancellationToken)
+        public async Task<JwtTokenProfile?> Handle(LoginCommand request, CancellationToken cancellationToken)
         {
             _logger.LogInformation("### Handler Login for email: {Email}", request.Email);
 
             if (request == null)
-            {
-                _logger.LogWarning("### Login request is null");
                 throw new ArgumentException("Login data is required");
-            }
 
-            // Find user by email
             var user = await _userManager.FindByEmailAsync(request.Email);
             if (user == null)
             {
@@ -40,7 +34,6 @@ namespace Steam_TripleBrain.CQRS.Handler.Auth
                 return null;
             }
 
-            // Check password
             var passwordValid = await _userManager.CheckPasswordAsync(user, request.Password);
             if (!passwordValid)
             {
@@ -50,16 +43,14 @@ namespace Steam_TripleBrain.CQRS.Handler.Auth
 
             _logger.LogInformation("### User {Email} logged in successfully", request.Email);
 
-            // Generate tokens
-            var access = await _tokenService.CreateAccessTokenAsync(user);
-            var refresh = await _tokenService.CreateRefreshTokenAsync(user);
+            var jwt = await _tokenService.GetTokenByUserId(user.Id, request.StaySignedIn);
+            if (jwt == null)
+                return null;
 
-            return new JwtToken
+            return new JwtTokenProfile
             {
-                Accesstoken = access?.Token,
-                AccessExpiresAtUtc = access?.ExpiresAtUtc ?? DateTime.UtcNow,
-                RefreshToken = refresh?.Token,
-                RefreshExpiresAtUtc = refresh?.ExpireAtUtc ?? DateTime.UtcNow
+                Token = jwt.Token,
+                ExpiresAtUtc = jwt.ExpirationDate
             };
         }
     }

@@ -5,77 +5,78 @@ using Steam_TripleBrain.Data;
 using Steam_TripleBrain.MappingProfiles;
 using Steam_TripleBrain.Models;
 using Steam_TripleBrain.Profiles;
+using Steam_TripleBrain.Services;
+using System.Net.Http;
 
 namespace Steam_TripleBrain.CQRS.Handler.Game
 {
     public class CreateGameHandler : IRequestHandler<CreateGameCommand, Result<GameViewProfile>>
     {
-        //Adding DB and logger
         private readonly AppDbContext _context;
         private readonly ILogger<CreateGameHandler> _logger;
-        
+        private readonly IFileStorageService _fileStorage;
 
-        public CreateGameHandler(AppDbContext context, ILogger<CreateGameHandler> logger)
+        public CreateGameHandler(
+            AppDbContext context,
+            ILogger<CreateGameHandler> logger,
+            IFileStorageService fileStorage)
         {
             _context = context;
             _logger = logger;
+            _fileStorage = fileStorage;
         }
 
         public async Task<Result<GameViewProfile>> Handle(CreateGameCommand request, CancellationToken cancellationToken)
         {
-            //Check if game with the same ID already exists
             _logger.LogInformation("Handling CreateGameCommand for game with ID {GameId}", request.Id);
-            var exists = await _context.Games.AnyAsync(g => g.Id == request.Id, cancellationToken);
-            _logger.LogInformation("Checking if game with ID {GameId} exists: {Exists}", request.Id, exists);
 
+            var exists = await _context.Games.AnyAsync(g => g.Id == request.Id, cancellationToken);
             if (exists)
-            {   //Return failure result if game already exists
+            {
                 _logger.LogWarning("Game with ID {GameId} already exists. Cannot create.", request.Id);
                 return Result<GameViewProfile>.Failure($"Game with ID {request.Id} already exists.");
             }
 
-            //I hate Mapper, so I'll do it manually
-            /*
-            var game = new Models.Game()
+            string posterPath;
+            try
             {
-                Id = request.Id,
-                Name = request.Name,
-                Poster = request.Poster,
-                Images = request.Images,
-                Rating = request.Rating,
-                Description = request.Description,
-                Genres = request.Genres,
-                Tags = request.Tags,
-                Price = request.Price,
-                Discount = request.Discount,
-                Author = request.Author,
-                DLCs = request.DLCs
-            };*/
+                posterPath = await _fileStorage.SaveProductImageFromUriOrPathAsync(request.Poster, cancellationToken);
+            }
+            catch (Exception ex) when (ex is ArgumentException or InvalidOperationException or FileNotFoundException or HttpRequestException or IOException)
+            {
+                _logger.LogWarning(ex, "Failed to persist poster");
+                return Result<GameViewProfile>.Failure($"Poster: {ex.Message}");
+            }
 
-            //Possibly could work, need to be tested.
+            List<string>? galleryPaths = null;
+            if (request.Images is { Count: > 0 })
+            {
+                galleryPaths = new List<string>();
+                foreach (var src in request.Images)
+                {
+                    if (string.IsNullOrWhiteSpace(src))
+                        continue;
+
+                    try
+                    {
+                        galleryPaths.Add(await _fileStorage.SaveProductImageFromUriOrPathAsync(src.Trim(), cancellationToken));
+                    }
+                    catch (Exception ex) when (ex is ArgumentException or InvalidOperationException or FileNotFoundException or HttpRequestException or IOException)
+                    {
+                        _logger.LogWarning(ex, "Failed to persist gallery image");
+                        return Result<GameViewProfile>.Failure($"Image gallery: {ex.Message}");
+                    }
+                }
+            }
+
             var game = GameMappingProfile.ToGame(request);
+            game.Poster = posterPath;
+            game.Images = galleryPaths;
 
-            await _context.Games.AddAsync(game);
+            await _context.Games.AddAsync(game, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
-            
-            //var gameViewProfile = new GameViewProfile()
-            //{
-            //    Id = game.Id,
-            //    Name = game.Name,
-            //    Poster = game.Poster,
-            //    Images = game.Images,
-            //    Rating = game.Rating,
-            //    Description = game.Description,
-            //    Genres = game.Genres,
-            //    Tags = game.Tags,
-            //    Price = game.Price,
-            //    Discount = game.Discount,
-            //    Author = game.Author,
-            //    DLCs = game.DLCs
-            //};
 
             var gameViewProfile = GameMappingProfile.ToProfile(game);
-
             return Result<GameViewProfile>.Success(gameViewProfile, "Game created successfully.");
         }
     }

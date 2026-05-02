@@ -10,15 +10,18 @@ using Steam_TripleBrain.Services;
 
 namespace Steam_TripleBrain.CQRS.Handler.Auth
 {
-    public class RegisterHandler : IRequestHandler<RegisterCommand, JwtToken>
+    public class RegisterHandler : IRequestHandler<RegisterCommand, JwtTokenProfile?>
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly ITokenService _tokenService;
         private readonly ILogger<RegisterHandler> _logger;
         private readonly AppDbContext _context;
 
-        public RegisterHandler(UserManager<AppUser> userManager,
-            ITokenService tokenService, ILogger<RegisterHandler> logger, AppDbContext context)
+        public RegisterHandler(
+            UserManager<AppUser> userManager,
+            ITokenService tokenService,
+            ILogger<RegisterHandler> logger,
+            AppDbContext context)
         {
             _userManager = userManager;
             _tokenService = tokenService;
@@ -26,18 +29,15 @@ namespace Steam_TripleBrain.CQRS.Handler.Auth
             _context = context;
         }
 
-        //Methor to handle registration
-        public async Task<JwtToken> Handle(RegisterCommand request, CancellationToken cancellationToken)
+        public async Task<JwtTokenProfile?> Handle(RegisterCommand request, CancellationToken cancellationToken)
         {
-
             _logger.LogInformation("### Handler Registration");
-            if (request == null)
-            {
-                _logger.LogInformation("### Handle Register: request is null.");
-                throw new ArgumentException("Registration data is required");    
-            }
 
-            var exists = await _context.Users.AnyAsync(g => g.UserName == request.Username || g.Email == request.Email, cancellationToken);
+            if (request == null)
+                throw new ArgumentException("Registration data is required");
+
+            var exists = await _context.Users.AnyAsync(
+                g => g.UserName == request.Username || g.Email == request.Email, cancellationToken);
 
             if (exists)
             {
@@ -45,16 +45,6 @@ namespace Steam_TripleBrain.CQRS.Handler.Auth
                 return null;
             }
 
-            
-
-            //var appUser = new AppUser
-            //{
-            //    Id = Guid.NewGuid(),
-            //    UserName = request.Username,
-            //    Email = request.Email
-            //};
-
-            // Map request to Identity AppUser and create using UserManager
             var appUser = UserMappingProfile.ToAppUser(request);
 
             var result = await _userManager.CreateAsync(appUser, request.Password);
@@ -64,13 +54,14 @@ namespace Steam_TripleBrain.CQRS.Handler.Auth
                 return null;
             }
 
-            // Create User object in Users table
+            var utcNow = DateTime.UtcNow;
             var user = new User
             {
                 Id = appUser.Id,
                 UserName = appUser.UserName,
                 Email = appUser.Email,
-                DateOfReg = DateTime.UtcNow
+                Role = "User",
+                CreatedAt = utcNow
             };
 
             _context.Users.Add(user);
@@ -78,17 +69,15 @@ namespace Steam_TripleBrain.CQRS.Handler.Auth
 
             _logger.LogInformation("User {Username} registered successfully with ID {UserId}", request.Username, appUser.Id);
 
-            var access = await _tokenService.CreateAccessTokenAsync(appUser);
-            var refresh = await _tokenService.CreateRefreshTokenAsync(appUser);
+            var jwt = await _tokenService.GetTokenByUserId(appUser.Id, staySignedIn: false);
+            if (jwt == null)
+                return null;
 
-            return new JwtToken
+            return new JwtTokenProfile
             {
-                Accesstoken = access?.Token,
-                AccessExpiresAtUtc = access?.ExpiresAtUtc ?? DateTime.UtcNow,
-                RefreshToken = refresh?.Token,
-                RefreshExpiresAtUtc = refresh?.ExpireAtUtc ?? DateTime.UtcNow
+                Token = jwt.Token,
+                ExpiresAtUtc = jwt.ExpirationDate
             };
         }
     }
 }
-

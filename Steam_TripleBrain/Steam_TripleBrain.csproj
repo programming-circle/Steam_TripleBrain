@@ -206,9 +206,7 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <Folder Include="CQRS\Command\NewFolder\" />
-	</ItemGroup>
-	<ItemGroup>
-	  <Folder Include="Migrations\" />
+	  <Folder Include="wwwroot\" />
 	</ItemGroup>
 
 </Project>

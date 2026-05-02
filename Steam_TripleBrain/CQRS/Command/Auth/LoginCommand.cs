@@ -1,14 +1,14 @@
 using FluentValidation;
 using MediatR;
-using Steam_TripleBrain.Models;
 using Steam_TripleBrain.Profiles.Tokens;
 
 namespace Steam_TripleBrain.CQRS.Command.Auth
 {
-    public class LoginCommand : IRequest<JwtToken>
+    public class LoginCommand : IRequest<JwtTokenProfile?>
     {
         public string Email { get; set; }
         public string Password { get; set; }
+        public bool StaySignedIn { get; set; }
     }
 
     public class LoginCommandValidator : AbstractValidator<LoginCommand>

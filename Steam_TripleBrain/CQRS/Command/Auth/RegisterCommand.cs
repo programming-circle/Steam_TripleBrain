@@ -1,10 +1,10 @@
 ﻿using FluentValidation;
 using MediatR;
-using Steam_TripleBrain.Models;
+using Steam_TripleBrain.Profiles.Tokens;
 
 namespace Steam_TripleBrain.CQRS.Command.Auth
 {
-    public class RegisterCommand : IRequest<JwtToken>
+    public class RegisterCommand : IRequest<JwtTokenProfile?>
     {
         public Guid Id { get; set; }
         public string Username { get; set; }

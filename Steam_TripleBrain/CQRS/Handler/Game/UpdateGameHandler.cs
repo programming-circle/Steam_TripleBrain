@@ -2,9 +2,11 @@
 using Microsoft.EntityFrameworkCore;
 using Steam_TripleBrain.CQRS.Command.Game;
 using Steam_TripleBrain.Data;
+using Steam_TripleBrain.MappingProfiles;
 using Steam_TripleBrain.Models;
 using Steam_TripleBrain.Profiles;
-using Steam_TripleBrain.MappingProfiles;
+using Steam_TripleBrain.Services;
+using System.Net.Http;
 
 namespace Steam_TripleBrain.CQRS.Handler.Game
 {
@@ -12,78 +14,113 @@ namespace Steam_TripleBrain.CQRS.Handler.Game
     {
         private readonly AppDbContext _context;
         private readonly ILogger<UpdateGameHandler> _logger;
+        private readonly IFileStorageService _fileStorage;
 
-        public UpdateGameHandler(AppDbContext appDbContext, ILogger<UpdateGameHandler> logger)
+        public UpdateGameHandler(
+            AppDbContext context,
+            ILogger<UpdateGameHandler> logger,
+            IFileStorageService fileStorage)
         {
-            _context = appDbContext;
+            _context = context;
             _logger = logger;
+            _fileStorage = fileStorage;
         }
+
+        private static bool IsManagedProductPath(string? path) =>
+            !string.IsNullOrEmpty(path) &&
+            path.StartsWith("/uploads/products/", StringComparison.OrdinalIgnoreCase);
+
         public async Task<Result<GameViewProfile>> Handle(UpdateGameCommand request, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Handling UpdateGameCommand for game: {GameName}", request.Name);
+            _logger.LogInformation("Handling UpdateGameCommand for game id {GameId}", request.Id);
+
             var exists = await _context.Games.AnyAsync(g => g.Id == request.Id, cancellationToken);
-            _logger.LogInformation("Checking if game with ID {GameId} exists: {Exists}", request.Id, exists);
             if (!exists)
-            {
-                _logger.LogInformation("No such object in DB");
                 return Result<GameViewProfile>.Failure("No object to update");
-            }
-            // Load the existing game with related data
+
             var game = await _context.Games
-                .Include(g => g.Poster)
-                .Include(g => g.Images)
                 .Include(g => g.Genres)
-                //.Include(g => g.Tags)
-                //.Include(g => g.DLCs)
                 .FirstOrDefaultAsync(g => g.Id == request.Id, cancellationToken);
 
             if (game == null)
-            {
-                _logger.LogWarning("Game with ID {GameId} not found when attempting to load for update.", request.Id);
                 return Result<GameViewProfile>.Failure("Game not found.");
+
+            var oldPoster = game.Poster;
+            var oldImages = game.Images?.ToList() ?? new List<string>();
+
+            if (!string.IsNullOrWhiteSpace(request.Poster))
+            {
+                string newPoster;
+                try
+                {
+                    newPoster = await _fileStorage.SaveProductImageFromUriOrPathAsync(request.Poster.Trim(), cancellationToken);
+                }
+                catch (Exception ex) when (ex is ArgumentException or InvalidOperationException or FileNotFoundException or HttpRequestException or IOException)
+                {
+                    _logger.LogWarning(ex, "Failed to persist poster on update");
+                    return Result<GameViewProfile>.Failure($"Poster: {ex.Message}");
+                }
+
+                if (!string.Equals(oldPoster, newPoster, StringComparison.Ordinal) &&
+                    IsManagedProductPath(oldPoster))
+                {
+                    await _fileStorage.DeleteAsync(oldPoster, cancellationToken);
+                }
+
+                game.Poster = newPoster;
             }
 
-            // Update scalar properties
-            //game.Name = request.Name;
-            //game.Rating = request.Rating;
-            //game.Description = request.Description;
-            //game.Price = request.Price;
-            //game.Discount = request.Discount;
-            //game.Developer = request.Developer;
-
-            // Update poster
-            //if (request.Poster != null)
-            //{
-            //    game.Poster = request.Poster;
-            //}
-
-            // Update collections: replace with incoming lists (defensive copy)
-            //game.Images = request.Images ?? null;
-
-            //game.Genres = request.Genres?.Select(g => new GenreViewProfile
-            //{
-            //    Id = g.Id == Guid.Empty ? Guid.NewGuid() : g.Id,
-            //    Name = g.Name
-            //}).ToList() ?? new List<GenreViewProfile>();
-            /*
-            game.Tags = request.Tags?.Select(t => new Tag
+            if (request.Images != null)
             {
-                Id = t.Id == Guid.Empty ? Guid.NewGuid() : t.Id,
-                Name = t.Name
-            }).ToList();*/
-            /*
-            game.DLCs = request.DLCs?.Select(d => new DLC
-            {
-                Id = d.Id == Guid.Empty ? Guid.NewGuid() : d.Id,
-                Name = d.Name,
-                Price = d.Price,
-                Discount = d.Discount,
-                Description = d.Description,
-                Game = game
-            }).ToList();*/
+                var resolved = new List<string>();
+                foreach (var src in request.Images)
+                {
+                    if (string.IsNullOrWhiteSpace(src))
+                        continue;
 
-            // Persist changes
-            _context.Games.Update(game);
+                    try
+                    {
+                        resolved.Add(await _fileStorage.SaveProductImageFromUriOrPathAsync(src.Trim(), cancellationToken));
+                    }
+                    catch (Exception ex) when (ex is ArgumentException or InvalidOperationException or FileNotFoundException or HttpRequestException or IOException)
+                    {
+                        _logger.LogWarning(ex, "Failed to persist gallery image on update");
+                        return Result<GameViewProfile>.Failure($"Image gallery: {ex.Message}");
+                    }
+                }
+
+                foreach (var prev in oldImages)
+                {
+                    if (!IsManagedProductPath(prev))
+                        continue;
+
+                    var stillUsed = resolved.Exists(p => string.Equals(p, prev, StringComparison.OrdinalIgnoreCase));
+                    if (!stillUsed)
+                        await _fileStorage.DeleteAsync(prev, cancellationToken);
+                }
+
+                game.Images = resolved;
+            }
+
+            game.Name = request.Name;
+            game.Rating = request.Rating;
+            game.Description = request.Description;
+            game.Price = request.Price;
+            game.Discount = request.Discount;
+            game.Developer = request.Developer;
+
+            if (request.Genres == null || request.Genres.Count == 0)
+                return Result<GameViewProfile>.Failure("At least one genre is required.");
+
+            var oldGenres = game.Genres?.ToList() ?? new List<Steam_TripleBrain.Models.Genre>();
+            if (oldGenres.Count > 0)
+                _context.Genres.RemoveRange(oldGenres);
+
+            game.Genres = request.Genres.Select(gv => new Steam_TripleBrain.Models.Genre
+            {
+                Id = gv.Id == Guid.Empty ? Guid.NewGuid() : gv.Id,
+                Name = gv.Name
+            }).ToList();
             await _context.SaveChangesAsync(cancellationToken);
 
             var profile = GameMappingProfile.ToProfile(game);

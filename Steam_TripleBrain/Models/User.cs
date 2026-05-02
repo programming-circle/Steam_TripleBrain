@@ -14,8 +14,9 @@ namespace Steam_TripleBrain.Models
 
         public string? Icon { get; set; }
 
-        public string Role { get; set; }
-        public DateTime CreatedAt {  get; set; } = DateTime.Now;
+        public string Role { get; set; } = "User";
+
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? DeletedAt { get; set; }
 
         public List<Game>? PurchasedGames { get; set; }

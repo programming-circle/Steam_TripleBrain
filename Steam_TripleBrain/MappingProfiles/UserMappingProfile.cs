@@ -17,7 +17,7 @@ namespace Steam_TripleBrain.MappingProfiles
                 UserName = rr.Username,
                 Email = rr.Email,
                 Password = rr.Password,
-                DateOfReg = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow
             };
         }
 

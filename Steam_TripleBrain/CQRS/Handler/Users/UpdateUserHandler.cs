@@ -29,10 +29,9 @@ namespace Steam_TripleBrain.CQRS.Handler.Users
 
             // Preserve fields that shouldn't be overwritten
             updated.Id = existing.Id;
-            updated.DateOfReg = existing.DateOfReg;
+            updated.CreatedAt = existing.CreatedAt;
             updated.Icon = existing.Icon;
             updated.PurchasedGames = existing.PurchasedGames;
-            updated.DLCs = existing.DLCs;
 
             // Apply scalar changes to tracked entity
             _context.Entry(existing).CurrentValues.SetValues(updated);

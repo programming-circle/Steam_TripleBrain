@@ -55,7 +55,7 @@ namespace Steam_TripleBrain.Controllers
                 user.UserName,
                 user.Email,
                 IconUrl = user.Icon ?? null,
-                user.DateOfReg,
+                user.CreatedAt,
                 PurchasedGames = user.PurchasedGames?.Select(g => new { g.Id, g.Name })
             });
         }

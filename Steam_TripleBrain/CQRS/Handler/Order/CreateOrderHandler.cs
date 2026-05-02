@@ -15,21 +15,32 @@ namespace Steam_TripleBrain.CQRS.Handler.Order
     {
         private readonly AppDbContext _context;
         private readonly ILogger<CreateOrderHandler> _logger;
-        private readonly TokenService _token;
+        private readonly ITokenService _tokenService;
 
-        public CreateOrderHandler(AppDbContext context
-            , ILogger<CreateOrderHandler> logger , TokenService token)
+        public CreateOrderHandler(AppDbContext context, ILogger<CreateOrderHandler> logger, ITokenService tokenService)
         {
             _context = context;
             _logger = logger;
-            _token = token;
+            _tokenService = tokenService;
         }
 
         public async Task<Result<OrderViewProfile>> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
         {
-
-            var decodeResult = await _token.
-            _logger.LogInformation("CreateOrder start work");
+            _logger.LogInformation("Creating Order");
+            _logger.LogInformation("### CreateOrder: decoding user token");
+            var decodeResult = await _tokenService.DecodeTokenFromHeaders();
+            if(!decodeResult.IsSuccess)
+            {
+                _logger.LogError("### CreateOrder: Error, DecodeToken failed {ErrorMessage}", decodeResult.ErrorMessage);
+                return new() { IsSuccess = decodeResult.IsSuccess , ErrorMessage = decodeResult.ErrorMessage , statusCode = decodeResult.statusCode};
+            }
+            if(decodeResult == null )
+            {
+                _logger.LogError("### CreateOrder: Error, Decode Token Result is empty");
+                return new() { IsSuccess = false, ErrorMessage = "Decode Result is empty", statusCode = 204 };
+            }
+            var user = decodeResult.Data;
+            request.UserId = user.Id;
             var exists = await _context.Orders.AnyAsync(g => g.Id == request.Id, cancellationToken);
             if (exists)
             {

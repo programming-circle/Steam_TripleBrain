@@ -18,7 +18,7 @@ namespace Steam_TripleBrain.CQRS.Command.Order
     public class CreateOrderValidator : AbstractValidator<CreateOrderCommand>
     {
         public CreateOrderValidator() { 
-            RuleFor(x => x.UserId).NotEmpty().WithMessage("User not found , can't create order");
+            //RuleFor(x => x.UserId).NotEmpty().WithMessage("User not found , can't create order");
             RuleFor(x => x.CreatedAt).NotEmpty().WithMessage("Date must be");
             RuleFor(x => x.TotalPrice).NotEmpty().WithMessage("Must be price");
             RuleFor(x => x.TotalPrice).GreaterThan(-1).WithMessage("Must be valid (not negative)"); //Check later if that works
