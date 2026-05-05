@@ -4,16 +4,16 @@
     {
         public Guid Id { get; set; }
 
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
-        public string Poster { get; set; }
+        public string? Poster { get; set; }
 
         public List<string>? Images { get; set; }
 
         public double Rating { get; set; } // Possibly i gonna add system relating on ratings from Reviews.
 
-        public string Description { get; set; }
-        public List<Genre> Genres { get; set; }
+        public string? Description { get; set; }
+        public List<Genre>? Genres { get; set; }
 
         //public List<Tag>? Tags { get; set; }
 

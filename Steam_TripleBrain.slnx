@@ -1,3 +1,4 @@
 <Solution>
   <Project Path="Steam_TripleBrain/Steam_TripleBrain.csproj" />
+  <Project Path="TestProject1/TestProject1.csproj" Id="6841483b-69aa-4ad3-bae0-69f227b42272" />
 </Solution>

@@ -26,8 +26,8 @@ namespace Steam_TripleBrain.CQRS.Handler.Game
         {
             _logger.LogInformation("Handling GetAllGamesQueryRequest");
             IQueryable<Models.Game> query = _context.Games.AsNoTracking()
-                .Include(g => g.Poster)
-                .Include(g => g.Images)
+                //.Include(g => g.Poster) <------ Poster is a string, so no need to include it as a navigation property
+                //.Include(g => g.Images) <------ Images is a List<string>, so no need to include it as a navigation property
                 .Include(g => g.Genres);
                 //.Include(g => g.Tags)
                 //.Include(g => g.DLCs);
