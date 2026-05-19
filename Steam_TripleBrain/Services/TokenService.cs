@@ -158,13 +158,22 @@ namespace Steam_TripleBrain.Services
                 _logger.LogError("HttpContext not available");
                 return new Result<User>("See server log") { statusCode = 500 };
             }
-            string? token = httpContext.Request.Headers["Authorization"];
-            if (token != null)
-            {
-                var result = await DecodeToken(token, checkAdminRole);
-                return result;
-            }
-            return new("Token required") { statusCode = 401 };
+            var authHeader = httpContext.Request.Headers["Authorization"].FirstOrDefault();
+            _logger.LogInformation("### Auth header value: {Header}", authHeader ?? "NULL");
+            if (string.IsNullOrWhiteSpace(authHeader))
+                return new Result<User>("Token required") { statusCode = 401 };
+
+            var result = await DecodeToken(authHeader, checkAdminRole);
+            return result;
+
+
+            //string? token = httpContext.Request.Headers["Authorization"];
+            //if (token != null)
+            //{
+            //    var result = await DecodeToken(token, checkAdminRole);
+            //    return result;
+            //}
+            //return new("Token required") { statusCode = 401 };
 
             //string? authHeader = httpContext.Request.Headers.Authorization;
             //if (authHeader != null)
