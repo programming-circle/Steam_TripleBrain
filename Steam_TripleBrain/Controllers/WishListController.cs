@@ -1,70 +1,52 @@
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Steam_TripleBrain.CQRS.Command.WishLists;
-using Steam_TripleBrain.CQRS.Query.WishLists;
+using Steam_TripleBrain.CQRS.Command.Game;
+using Steam_TripleBrain.CQRS.Command.WishList;
+using Steam_TripleBrain.Data;
 
 namespace Steam_TripleBrain.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class WishListController : Controller
+    public class WishlistController : Controller
     {
-        private readonly IMediator _mediator;
+        private readonly IMediator _mediatr;
+        private readonly AppDbContext _context;
+        private readonly ILogger<WishlistController> _logger;
 
-        public WishListController(IMediator mediator)
+        public WishlistController(IMediator mediatr, AppDbContext context, ILogger<WishlistController> logger)
         {
-            _mediator = mediator;
+            _mediatr = mediatr;
+            _context = context;
+            _logger = logger;
+        }
+        public IActionResult Index()
+        {
+            return View();
         }
 
-        [HttpGet("get-all")]
-        public async Task<IActionResult> GetAll()
+        [HttpPost("create-wishlist")]
+        public async Task<IActionResult> CreateAsync([FromBody] CreateWishListCommand request)
         {
-            var result = await _mediator.Send(new GetAllWishListsQuery());
+            var result = await _mediatr.Send(request);
+
             if (!result.IsSuccess)
+            {
                 return BadRequest(result);
+            }
             return Ok(result);
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(Guid id)
+        [HttpPost("update-wishlist")]
+        public async Task<IActionResult> CreateAsync([FromBody] UpdateWishListCommand request)
         {
-            var result = await _mediator.Send(new GetWishListByIdQuery { Id = id });
+            var result = await _mediatr.Send(request);
+
             if (!result.IsSuccess)
+            {
                 return BadRequest(result);
+            }
             return Ok(result);
         }
 
-        [HttpPost("create")]
-        public async Task<IActionResult> Create([FromBody] CreateWishListCommand command)
-        {
-            var result = await _mediator.Send(command);
-            if (!result.IsSuccess)
-                return BadRequest(result);
 
-            return CreatedAtAction(nameof(GetById), new { id = result.Data.Id }, result);
-        }
-
-        [HttpPut("update/{id}")]
-        public async Task<IActionResult> Update(Guid id, [FromBody] UpdateWishListCommand command)
-        {
-            if (command == null || id != command.Id)
-                return BadRequest("Invalid wishlist data");
-
-            var result = await _mediator.Send(command);
-            if (!result.IsSuccess)
-                return BadRequest(result);
-
-            return Ok(result);
-        }
-
-        [HttpPost("delete/{id}")]
-        public async Task<IActionResult> Delete(Guid id)
-        {
-            var result = await _mediator.Send(new DeleteWishListCommand { Id = id });
-            if (!result.IsSuccess)
-                return BadRequest(result);
-
-            return NoContent();
-        }
     }
 }

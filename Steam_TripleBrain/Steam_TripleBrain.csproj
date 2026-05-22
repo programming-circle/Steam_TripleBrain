@@ -114,7 +114,6 @@
 	  <Compile Remove="Controllers\ProfileController.cs" />
 	  <Compile Remove="Controllers\ReviewController.cs" />
 	  <Compile Remove="Controllers\TagController.cs" />
-	  <Compile Remove="Controllers\WishListController.cs" />
 	  <Compile Remove="MappingProfiles\ImageMappingProfile.cs" />
 	  <Compile Remove="MappingProfiles\MappingProfile.cs" />
 	  <Compile Remove="Models\DLC.cs" />
@@ -144,6 +143,7 @@
 		<Compile Include="CQRS\Query\OrderItem\OrderItemGetAllQuery.cs" />
 		<Compile Include="CQRS\Query\Order\GetOrderByIdQueryRequest.cs" />
 		<Compile Include="CQRS\Query\Order\OrderDeleteByIdQueryRequest.cs" />
+		<Compile Include="CQRS\Query\WishList\GetByUserIdWishListQuery.cs" />
 	</ItemGroup>
 
 	<ItemGroup>

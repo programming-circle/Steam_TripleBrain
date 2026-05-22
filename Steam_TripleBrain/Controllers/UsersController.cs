@@ -40,7 +40,6 @@ namespace Steam_TripleBrain.Controllers
                 
 
             var user = await _db.Users
-                .Include(u => u.Icon)
                 .Include(u => u.PurchasedGames)
                 .FirstOrDefaultAsync(u => u.Id == userId);
 
@@ -84,7 +83,6 @@ namespace Steam_TripleBrain.Controllers
             }
 
             var user = await _db.Users
-                .Include(u => u.Icon)
                 .FirstOrDefaultAsync(u => u.Id == userId);
 
             if (user == null){
