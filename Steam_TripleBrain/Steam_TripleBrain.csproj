@@ -186,7 +186,7 @@
 	<ItemGroup>
 	  <Compile Include="Models\DLC.cs" />
 	  <None Include="Models\FriendShip.cs" />
-     <Compile Include="Models\Review.cs" />
+     <None Include="Models\Review.cs" />
 	  <None Include="Models\Tag.cs" />
     <Compile Include="Profiles\ReviewViewProfile.cs" />
 	  <None Include="Profiles\TagViewProfile.cs" />
