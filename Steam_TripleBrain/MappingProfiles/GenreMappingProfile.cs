@@ -28,7 +28,7 @@ namespace Steam_TripleBrain.MappingProfiles
         {
             return new GenreViewProfile
             {
-                Id = genre.Id,
+                Id = genre.Id == Guid.Empty ? Guid.NewGuid() : genre.Id,
                 Name = genre.Name
             };
         }

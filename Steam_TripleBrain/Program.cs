@@ -13,14 +13,14 @@ using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.WebHost.ConfigureKestrel(options =>
-{
-    // Слушать порт 7219 на всех IP-адресах (и localhost, и Radmin)
-    options.ListenAnyIP(7219, listenOptions =>
-    {
-        listenOptions.UseHttps(); // Включаем поддержку HTTPS
-    });
-});
+//builder.WebHost.ConfigureKestrel(options =>
+//{
+//    // Слушать порт 7219 на всех IP-адресах (и localhost, и Radmin)
+//    options.ListenAnyIP(7219, listenOptions =>
+//    {
+//        listenOptions.UseHttps(); // Включаем поддержку HTTPS
+//    });
+//});
 
 // Add services to the container.
 

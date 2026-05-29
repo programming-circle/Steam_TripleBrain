@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Steam_TripleBrain.CQRS.Command.Genre;
+using Steam_TripleBrain.CQRS.Query.Game;
 using Steam_TripleBrain.CQRS.Query.Genre;
 using Steam_TripleBrain.Data;
 
@@ -60,6 +61,18 @@ namespace Steam_TripleBrain.Controllers
                 return BadRequest(result);
             }
             _logger.LogInformation("Genre updated successfully");
+            return Ok(result);
+        }
+
+        [HttpGet("get-all")]
+        public async Task<IActionResult> GetAllGenreAsync([FromBody] GetAllGenreQuery request)
+        {
+            var result = await _mediatr.Send(request ?? new GetAllGenreQuery(), HttpContext.RequestAborted);
+
+            if (!result.IsSuccess)
+            {
+                return BadRequest(result);
+            }
             return Ok(result);
         }
     }
