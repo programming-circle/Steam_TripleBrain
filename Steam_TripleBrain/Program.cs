@@ -36,6 +36,18 @@ builder.Services.AddCors(options =>
                   .AllowAnyHeader()
                   .AllowAnyMethod();
         });
+        });
+});
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("FrontEnd", police =>
+    {
+
+        police.WithOrigins("http://192.168.0.123:3000") // Address for FrontEnd of other device
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
 });
 
 //builder.Services.AddCors(options =>
@@ -168,6 +180,8 @@ if (app.Environment.IsDevelopment())
 
 
 app.UseHttpsRedirection();
+
+app.UseStaticFiles();
 
 app.UseAuthentication();
 app.UseAuthorization();
