@@ -6,6 +6,8 @@ using Steam_TripleBrain.MappingProfiles;
 using Steam_TripleBrain.Models;
 using Steam_TripleBrain.Profiles;
 using Steam_TripleBrain.Services;
+using System.Linq;
+using System.Collections.Generic;
 using System.Net.Http;
 
 namespace Steam_TripleBrain.CQRS.Handler.Game
@@ -31,10 +33,11 @@ namespace Steam_TripleBrain.CQRS.Handler.Game
             _logger.LogInformation("Handling CreateGameCommand for game with ID {GameId}", request.Id);
 
             var exists = await _context.Games.AnyAsync(g => g.Id == request.Id, cancellationToken);
-            if (exists)
+            var existsName = await _context.Games.AnyAsync(g => g.Name == request.Name, cancellationToken);
+            if (exists || existsName)
             {
-                _logger.LogWarning("Game with ID {GameId} already exists. Cannot create.", request.Id);
-                return Result<GameViewProfile>.Failure($"Game with ID {request.Id} already exists.");
+                _logger.LogWarning("Game with ID {Id} {Name} already exists. Cannot create.", request.Id ,request.Name);
+                return Result<GameViewProfile>.Failure($"Game with ID {request.Id} or Name {request.Name} already exists.");
             }
 
             string posterPath;
@@ -69,9 +72,44 @@ namespace Steam_TripleBrain.CQRS.Handler.Game
                 }
             }
 
+
             var game = GameMappingProfile.ToGame(request);
             game.Poster = posterPath;
             game.Images = galleryPaths;
+
+            // Attach existing genres by Id or Name instead of creating duplicates
+            if (request.Genres != null && request.Genres.Count > 0)
+            {
+                var genreEntities = new List<Models.Genre>();
+                foreach (var g in request.Genres)
+                {
+                    Models.Genre? existingGenre = null;
+                    if (g.Id != Guid.Empty)
+                    {
+                        existingGenre = await _context.Genres.FindAsync(new object[] { g.Id }, cancellationToken);
+                    }
+
+                    if (existingGenre == null && !string.IsNullOrWhiteSpace(g.Name))
+                    {
+                        existingGenre = await _context.Genres.FirstOrDefaultAsync(x => x.Name == g.Name, cancellationToken);
+                    }
+
+                    if (existingGenre != null)
+                    {
+                        genreEntities.Add(existingGenre);
+                    }
+                    else
+                    {
+                        var newGenre = new Models.Genre { Id = g.Id == Guid.Empty ? Guid.NewGuid() : g.Id, Name = g.Name };
+                        genreEntities.Add(newGenre);
+                        // Add new genre to context so it will be persisted together with the game
+                        await _context.Genres.AddAsync(newGenre, cancellationToken);
+                    }
+                }
+
+                // Remove duplicates by Id
+                game.Genres = genreEntities.GroupBy(x => x.Id).Select(x => x.First()).ToList();
+            }
 
             await _context.Games.AddAsync(game, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
