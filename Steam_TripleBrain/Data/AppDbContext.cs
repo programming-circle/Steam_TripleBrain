@@ -37,7 +37,7 @@ namespace Steam_TripleBrain.Data
         //FriendShip
         //public DbSet<FriendShip> FriendShips => Set<FriendShip>();
         //Review
-        public DbSet<Review> Reviews => Set<Review>();
+        //public DbSet<Review> Reviews => Set<Review>();
 
         //Tokens
         public DbSet<JwtToken> JwtTokens { get; set; }

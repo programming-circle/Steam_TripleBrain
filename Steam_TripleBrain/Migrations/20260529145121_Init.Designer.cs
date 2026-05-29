@@ -12,7 +12,7 @@ using Steam_TripleBrain.Data;
 namespace Steam_TripleBrain.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260504133538_Init")]
+    [Migration("20260529145121_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -232,7 +232,6 @@ namespace Steam_TripleBrain.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("Developer")
@@ -244,12 +243,16 @@ namespace Steam_TripleBrain.Migrations
                     b.PrimitiveCollection<string>("Images")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsDLC")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid?>("ParentGameId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Poster")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Price")

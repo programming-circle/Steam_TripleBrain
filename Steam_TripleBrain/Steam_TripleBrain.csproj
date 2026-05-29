@@ -116,6 +116,7 @@
 	  <Compile Remove="Controllers\TagController.cs" />
 	  <Compile Remove="MappingProfiles\ImageMappingProfile.cs" />
 	  <Compile Remove="MappingProfiles\MappingProfile.cs" />
+	  <Compile Remove="MappingProfiles\ReviewMappingProfile.cs" />
 	  <Compile Remove="Models\DLC.cs" />
 	  <Compile Remove="Models\FriendShip.cs" />
 	  <Compile Remove="Models\ImageUrl.cs" />
@@ -178,7 +179,7 @@
 
 	<ItemGroup>
      <None Include="CQRS\Handler\Auth\LoginProfileHandler.cs" />
-     <Compile Include="MappingProfiles\MappingProfile.cs" />
+     <None Include="MappingProfiles\MappingProfile.cs" />
 	  <None Include="Models\DLC.cs" />
 	</ItemGroup>
 
@@ -188,7 +189,6 @@
 	  <None Include="Models\FriendShip.cs" />
      <None Include="Models\Review.cs" />
 	  <None Include="Models\Tag.cs" />
-    <Compile Include="Profiles\ReviewViewProfile.cs" />
 	  <None Include="Profiles\TagViewProfile.cs" />
 	  <None Include="Repositories\Interface\ITokenLogRepository.cs" />
 	  <None Include="Repositories\Interface\IUserRepository.cs" />
@@ -211,6 +211,7 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <Folder Include="CQRS\Command\NewFolder\" />
+	  <Folder Include="Migrations\" />
 	  <Folder Include="Steam_TripleBrain\CQRS\Command\DLCs\" />
 	  <Folder Include="wwwroot\" />
 	</ItemGroup>
@@ -218,11 +219,11 @@
 	<!-- Ensure DLC CQRS files are compiled and show in the project -->
 	<ItemGroup>
 	  <Compile Include="CQRS\Command\DLCs\**\*.cs" />
-   <Compile Include="CQRS\Command\Reviews\**\*.cs" />
-	  <Compile Include="CQRS\Handler\Reviews\**\*.cs" />
-	  <Compile Include="CQRS\Query\Reviews\**\*.cs" />
 	  <Compile Include="CQRS\Query\DLCs\**\*.cs" />
 	  <Compile Include="CQRS\Handler\DLCs\**\*.cs" />
+	</ItemGroup>
+	<ItemGroup>
+	  <None Include="MappingProfiles\ReviewMappingProfile.cs" />
 	</ItemGroup>
 
 </Project>
