@@ -20,11 +20,11 @@ namespace Steam_TripleBrain.CQRS.Handler.DLCs
 
         public async Task<Result<bool>> Handle(DeleteDLCCommand request, CancellationToken cancellationToken)
         {
-            var existing = await _context.DLCs.FirstOrDefaultAsync(d => d.Id == request.Id, cancellationToken);
+            var existing = await _context.Games.FirstOrDefaultAsync(g => g.Id == request.Id && g.IsDLC, cancellationToken);
             if (existing == null)
                 return Result<bool>.Failure("DLC not found");
 
-            _context.DLCs.Remove(existing);
+            _context.Games.Remove(existing);
             await _context.SaveChangesAsync(cancellationToken);
 
             return Result<bool>.Success(true);

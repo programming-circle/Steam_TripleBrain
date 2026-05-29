@@ -21,11 +21,12 @@ namespace Steam_TripleBrain.CQRS.Handler.DLCs
 
         public async Task<Result<DLCViewProfile>> Handle(GetDLCByIdQuery request, CancellationToken cancellationToken)
         {
-            var dlc = await _context.DLCs.Include(d => d.Game).FirstOrDefaultAsync(d => d.Id == request.Id, cancellationToken);
-            if (dlc == null)
+            // Find the Game entity that represents a DLC
+            var dlcGame = await _context.Games.FirstOrDefaultAsync(g => g.Id == request.Id && g.IsDLC, cancellationToken);
+            if (dlcGame == null)
                 return Result<DLCViewProfile>.Failure("DLC not found");
 
-            var profile = MappingProfile.ToProfile(dlc);
+            var profile = DLCMappingProfile.ToProfile(dlcGame);
             return Result<DLCViewProfile>.Success(profile);
         }
     }

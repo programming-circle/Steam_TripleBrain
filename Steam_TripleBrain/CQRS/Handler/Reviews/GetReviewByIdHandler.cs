@@ -25,7 +25,7 @@ namespace Steam_TripleBrain.CQRS.Handler.Reviews
             if (review == null)
                 return Result<Profiles.Review>.Failure("Review not found");
 
-            var profile = MappingProfile.ToProfile(review);
+            var profile = Steam_TripleBrain.MappingProfiles.ReviewMappingProfile.ToProfile(review);
             return Result<Profiles.Review>.Success(profile);
         }
     }

@@ -10,9 +10,17 @@ using Microsoft.IdentityModel.Tokens;
 using Steam_TripleBrain.Services;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
-using Steam_TripleBrain.Data;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.WebHost.ConfigureKestrel(options =>
+{
+    // Слушать порт 7219 на всех IP-адресах (и localhost, и Radmin)
+    options.ListenAnyIP(7219, listenOptions =>
+    {
+        listenOptions.UseHttps(); // Включаем поддержку HTTPS
+    });
+});
 
 // Add services to the container.
 
@@ -24,18 +32,22 @@ builder.Services.AddCors(options =>
             policy.WithOrigins("http://localhost:3000") // Address for FrontEnd
                   .AllowAnyHeader()
                   .AllowAnyMethod();
+            policy.WithOrigins("http://26.139.253.15:3000") // Address for FrontEnd
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
         });
 });
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("FrontEnd", police =>
-    {
-        police.WithOrigins("http://192.168.0.123:3000") // Address for FrontEnd of other device
-              .AllowAnyHeader()
-              .AllowAnyMethod();
-    });
-});
+//builder.Services.AddCors(options =>
+//{
+//    options.AddPolicy("FrontEnd", police =>
+//    {
+//        police.WithOrigins("http://26.139.253.15:3000") // Address for FrontEnd of other device
+//              .AllowAnyHeader()
+//              .AllowAnyMethod();
+//    });
+//});
+
 
 builder.Services.AddScoped<IFileStorageService, FileStorage>();
 
@@ -132,6 +144,22 @@ builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 app.UseCors("MyAllowSpecificOrigins");
+// Apply EF Core migrations automatically at startup to ensure DB schema is up-to-date
+using (var scope = app.Services.CreateScope())
+{
+    try
+    {
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        db.Database.Migrate();
+    }
+    catch (Exception ex)
+    {
+        // Log migration failure and continue - developer should inspect the error
+        var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred while migrating or initializing the database.");
+        throw;
+    }
+}
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

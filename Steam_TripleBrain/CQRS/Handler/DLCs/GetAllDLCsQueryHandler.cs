@@ -21,8 +21,8 @@ namespace Steam_TripleBrain.CQRS.Handler.DLCs
 
         public async Task<Result<List<DLCViewProfile>>> Handle(GetAllDLCsQuery request, CancellationToken cancellationToken)
         {
-            var dlcs = await _context.DLCs.Include(d => d.Game).ToListAsync(cancellationToken);
-            var profiles = dlcs.Select(d => MappingProfile.ToProfile(d)).ToList();
+            var dlcGames = await _context.Games.Where(g => g.IsDLC).ToListAsync(cancellationToken);
+            var profiles = dlcGames.Select(g => DLCMappingProfile.ToProfile(g)).ToList();
             return Result<List<DLCViewProfile>>.Success(profiles);
         }
     }

@@ -4,10 +4,11 @@ using Steam_TripleBrain.CQRS.Command.DLCs;
 using Steam_TripleBrain.Data;
 using Steam_TripleBrain.Models;
 using Steam_TripleBrain.MappingProfiles;
+using Steam_TripleBrain.Profiles;
 
 namespace Steam_TripleBrain.CQRS.Handler.DLCs
 {
-    public class GetDLCByIdHandler : IRequestHandler<GetDLCByIdCommand, Result<DLC>>
+    public class GetDLCByIdHandler : IRequestHandler<GetDLCByIdCommand, Result<DLCViewProfile>>
     {
         private readonly AppDbContext _context;
         private readonly ILogger<GetDLCByIdHandler> _logger;
@@ -18,13 +19,15 @@ namespace Steam_TripleBrain.CQRS.Handler.DLCs
             _logger = logger;
         }
 
-        public async Task<Result<DLC>> Handle(GetDLCByIdCommand request, CancellationToken cancellationToken)
+        public async Task<Result<DLCViewProfile>> Handle(GetDLCByIdCommand request, CancellationToken cancellationToken)
         {
-            var dlc = await _context.DLCs.Include(d => d.Game).FirstOrDefaultAsync(d => d.Id == request.Id, cancellationToken);
-            if (dlc == null)
-                return Result<DLC>.Failure("DLC not found");
+            // Find the Game entity which is marked as a DLC
+            var dlcGame = await _context.Games.FirstOrDefaultAsync(g => g.Id == request.Id && g.IsDLC, cancellationToken);
+            if (dlcGame == null)
+                return Result<DLCViewProfile>.Failure("DLC not found");
 
-            return Result<DLC>.Success(dlc);
+            var profile = DLCMappingProfile.ToProfile(dlcGame);
+            return Result<DLCViewProfile>.Success(profile);
         }
     }
 }
