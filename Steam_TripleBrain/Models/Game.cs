@@ -22,9 +22,12 @@
         public int Discount { get; set; }
         public DateTime CreatedAt { get; set; }
         public Guid Developer { get; set; }
-        
 
-        // public bool isDLC { get; set; } // Possibly i could make same system as in original STEAM . 
+        // Indicates that this Game record is a DLC rather than a base game
+        public bool IsDLC { get; set; }
+
+        // If IsDLC == true, this points to the parent/base game
+        public Guid? ParentGameId { get; set; }
 
         //public List<DLC>? DLCs { get; set; }
         //public object GameMappintProfile { get; internal set; }

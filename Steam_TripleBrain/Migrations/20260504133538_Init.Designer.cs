@@ -12,8 +12,8 @@ using Steam_TripleBrain.Data;
 namespace Steam_TripleBrain.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260502083229_init")]
-    partial class init
+    [Migration("20260504133538_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

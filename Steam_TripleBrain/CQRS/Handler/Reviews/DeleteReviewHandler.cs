@@ -27,6 +27,15 @@ namespace Steam_TripleBrain.CQRS.Handler.Reviews
             _context.Reviews.Remove(existing);
             await _context.SaveChangesAsync(cancellationToken);
 
+            // Recalculate rating for the associated game
+            var reviews = await _context.Reviews.Where(r => r.GameId == existing.GameId).ToListAsync(cancellationToken);
+            var game = await _context.Games.FirstOrDefaultAsync(g => g.Id == existing.GameId, cancellationToken);
+            if (game != null)
+            {
+                game.Rating = reviews.Count > 0 ? reviews.Average(r => r.Rating) : 0;
+                await _context.SaveChangesAsync(cancellationToken);
+            }
+
             return Result<bool>.Success(true);
         }
     }

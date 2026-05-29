@@ -108,7 +108,7 @@
 
 	<ItemGroup>
 	  <Compile Remove="Controllers\AdminController.cs" />
-	  <Compile Remove="Controllers\DLCController.cs" />
+      <Compile Remove="Controllers\AdminController.cs" />
 	  <Compile Remove="Controllers\GenreController.cs" />
 	  <Compile Remove="Controllers\ImageUrlController.cs" />
 	  <Compile Remove="Controllers\ProfileController.cs" />
@@ -120,7 +120,7 @@
 	  <Compile Remove="Models\FriendShip.cs" />
 	  <Compile Remove="Models\ImageUrl.cs" />
 	  <Compile Remove="Models\ProfilesAcc.cs" />
-	  <Compile Remove="Models\Review.cs" />
+
 	  <Compile Remove="Models\Tag.cs" />
 	  <Compile Remove="Profiles\ReviewViewProfile.cs" />
 	  <Compile Remove="Profiles\TagViewProfile.cs" />
@@ -177,13 +177,18 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Include="CQRS\Handler\Auth\LoginProfileHandler.cs" />
-	  <None Include="MappingProfiles\MappingProfile.cs" />
+     <None Include="CQRS\Handler\Auth\LoginProfileHandler.cs" />
+     <Compile Include="MappingProfiles\MappingProfile.cs" />
 	  <None Include="Models\DLC.cs" />
+	</ItemGroup>
+
+	<!-- Ensure DLC model is compiled -->
+	<ItemGroup>
+	  <Compile Include="Models\DLC.cs" />
 	  <None Include="Models\FriendShip.cs" />
-	  <None Include="Models\Review.cs" />
+     <Compile Include="Models\Review.cs" />
 	  <None Include="Models\Tag.cs" />
-	  <None Include="Profiles\ReviewViewProfile.cs" />
+    <Compile Include="Profiles\ReviewViewProfile.cs" />
 	  <None Include="Profiles\TagViewProfile.cs" />
 	  <None Include="Repositories\Interface\ITokenLogRepository.cs" />
 	  <None Include="Repositories\Interface\IUserRepository.cs" />
@@ -206,7 +211,18 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <Folder Include="CQRS\Command\NewFolder\" />
+	  <Folder Include="Steam_TripleBrain\CQRS\Command\DLCs\" />
 	  <Folder Include="wwwroot\" />
+	</ItemGroup>
+
+	<!-- Ensure DLC CQRS files are compiled and show in the project -->
+	<ItemGroup>
+	  <Compile Include="CQRS\Command\DLCs\**\*.cs" />
+   <Compile Include="CQRS\Command\Reviews\**\*.cs" />
+	  <Compile Include="CQRS\Handler\Reviews\**\*.cs" />
+	  <Compile Include="CQRS\Query\Reviews\**\*.cs" />
+	  <Compile Include="CQRS\Query\DLCs\**\*.cs" />
+	  <Compile Include="CQRS\Handler\DLCs\**\*.cs" />
 	</ItemGroup>
 
 </Project>

@@ -4,10 +4,11 @@ using Steam_TripleBrain.CQRS.Command.DLCs;
 using Steam_TripleBrain.Data;
 using Steam_TripleBrain.Models;
 using Steam_TripleBrain.MappingProfiles;
+using Steam_TripleBrain.Profiles;
 
 namespace Steam_TripleBrain.CQRS.Handler.DLCs
 {
-    public class UpdateDLCHandler : IRequestHandler<UpdateDLCCommand, Result<DLC>>
+    public class UpdateDLCHandler : IRequestHandler<UpdateDLCCommand, Result<DLCViewProfile>>
     {
         private readonly AppDbContext _context;
         private readonly ILogger<UpdateDLCHandler> _logger;
@@ -18,21 +19,32 @@ namespace Steam_TripleBrain.CQRS.Handler.DLCs
             _logger = logger;
         }
 
-        public async Task<Result<DLC>> Handle(UpdateDLCCommand request, CancellationToken cancellationToken)
+        public async Task<Result<DLCViewProfile>> Handle(UpdateDLCCommand request, CancellationToken cancellationToken)
         {
-            var existing = await _context.DLCs.Include(d => d.Game).FirstOrDefaultAsync(d => d.Id == request.Id, cancellationToken);
+            var existing = await _context.Games.FirstOrDefaultAsync(g => g.Id == request.Id && g.IsDLC, cancellationToken);
             if (existing == null)
-                return Result<DLC>.Failure("DLC not found");
+                return Result<DLCViewProfile>.Failure("DLC not found");
 
-            // Use mapping profile to create updated entity and apply changes
-            var updated = MappingProfile.ToDLC(request);
-            updated.Game = await _context.Games.FirstOrDefaultAsync(g => g.Id == request.GameId, cancellationToken);
+            // Update allowed fields
+            existing.Name = request.Name;
+            existing.Price = request.Price;
+            existing.Discount = request.Discount;
+            existing.Description = request.Description;
 
-            updated.Id = existing.Id; // ensure id remains the same
-            _context.Entry(existing).CurrentValues.SetValues(updated);
+            // If parent game changed, validate it
+            if (request.GameId != Guid.Empty && request.GameId != existing.ParentGameId)
+            {
+                var parent = await _context.Games.FirstOrDefaultAsync(g => g.Id == request.GameId, cancellationToken);
+                if (parent == null || parent.IsDLC)
+                    return Result<DLCViewProfile>.Failure("Invalid parent game");
+
+                existing.ParentGameId = parent.Id;
+            }
+
             await _context.SaveChangesAsync(cancellationToken);
 
-            return Result<DLC>.Success(existing);
+            var profile = DLCMappingProfile.ToProfile(existing);
+            return Result<DLCViewProfile>.Success(profile);
         }
     }
 }
