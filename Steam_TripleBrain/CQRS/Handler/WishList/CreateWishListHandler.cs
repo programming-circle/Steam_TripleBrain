@@ -27,11 +27,11 @@ namespace Steam_TripleBrain.CQRS.Handler.WishList
         public async Task<Result<WishListViewProfile>> Handle(CreateWishListCommand request, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Handling CreateWishlistHandler for wishlist with User {UserId}", request.UserId);
-            var exists = await _context.Games.AnyAsync(g => g.Id == request.Id, cancellationToken);
-            _logger.LogInformation("Checking if game with ID {GameId} exists: {Exists}", request.Id, exists);
+            var exists = await _context.WishLists.AnyAsync(w => w.Id == request.Id, cancellationToken);
+            _logger.LogInformation("Checking if wishlist with ID {WishListId} exists: {Exists}", request.Id, exists);
 
             if (exists)
-            {   //Return failure result if game already exists
+            {
                 _logger.LogWarning("### CreateWishlistHandler: WishList for UserID {UserId} already exists. Cannot create.", request.UserId);
                 return Result<WishListViewProfile>.Failure($"### CreateWishlistHandler: WishList for UserID {request.UserId} already exists. Cannot create.");
             }

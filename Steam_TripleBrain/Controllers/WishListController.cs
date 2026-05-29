@@ -1,11 +1,17 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Steam_TripleBrain.CQRS.Command.Game;
 using Steam_TripleBrain.CQRS.Command.WishList;
 using Steam_TripleBrain.Data;
+using Steam_TripleBrain.MappingProfiles;
+using Steam_TripleBrain.Models;
+using Steam_TripleBrain.Profiles;
 
 namespace Steam_TripleBrain.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class WishlistController : Controller
     {
         private readonly IMediator _mediatr;
@@ -35,8 +41,30 @@ namespace Steam_TripleBrain.Controllers
             return Ok(result);
         }
 
+        [HttpGet("get-by-user")]
+        public async Task<IActionResult> GetByUserAsync([FromQuery] string userId)
+        {
+            if (string.IsNullOrWhiteSpace(userId) || !Guid.TryParse(userId, out var parsedUserId))
+            {
+                return BadRequest(Result<WishListViewProfile>.Failure("UserId is required and must be a valid GUID."));
+            }
+
+            var wishList = await _context.WishLists
+                .Include(w => w.WishGames)
+                    .ThenInclude(g => g.Genres)
+                .FirstOrDefaultAsync(w => w.UserId == parsedUserId);
+
+            if (wishList == null)
+            {
+                return Ok(Result<WishListViewProfile>.Success(null));
+            }
+
+            var profile = WishListMappingProfile.ToProfile(wishList);
+            return Ok(Result<WishListViewProfile>.Success(profile));
+        }
+
         [HttpPost("update-wishlist")]
-        public async Task<IActionResult> CreateAsync([FromBody] UpdateWishListCommand request)
+        public async Task<IActionResult> UpdateAsync([FromBody] UpdateWishListCommand request)
         {
             var result = await _mediatr.Send(request);
 
@@ -46,7 +74,6 @@ namespace Steam_TripleBrain.Controllers
             }
             return Ok(result);
         }
-
 
     }
 }

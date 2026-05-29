@@ -65,9 +65,9 @@ namespace Steam_TripleBrain.Controllers
         }
 
         [HttpGet("get-all")]
-        public async Task<IActionResult> GetAllGenreAsync([FromBody] GetAllGenreQuery request)
+        public async Task<IActionResult> GetAllGenreAsync()
         {
-            var result = await _mediatr.Send(request ?? new GetAllGenreQuery(), HttpContext.RequestAborted);
+            var result = await _mediatr.Send(new GetAllGenreQuery(), HttpContext.RequestAborted);
 
             if (!result.IsSuccess)
             {
