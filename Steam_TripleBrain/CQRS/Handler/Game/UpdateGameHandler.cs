@@ -112,15 +112,45 @@ namespace Steam_TripleBrain.CQRS.Handler.Game
             if (request.Genres == null || request.Genres.Count == 0)
                 return Result<GameViewProfile>.Failure("At least one genre is required.");
 
-            var oldGenres = game.Genres?.ToList() ?? new List<Steam_TripleBrain.Models.Genre>();
-            if (oldGenres.Count > 0)
-                _context.Genres.RemoveRange(oldGenres);
+            var newGenreNames = request.Genres.Select(g => g.Name).Where(n => !string.IsNullOrWhiteSpace(n)).Select(n => n.Trim()).Distinct().ToList();
 
-            game.Genres = request.Genres.Select(gv => new Steam_TripleBrain.Models.Genre
+            // Update game's genre names
+            var oldGenreNames = game.Genres ?? new List<string>();
+            game.Genres = newGenreNames;
+
+            // Remove this game Id from genres that are no longer associated
+            var removed = oldGenreNames.Except(newGenreNames).ToList();
+            foreach (var r in removed)
             {
-                Id = gv.Id == Guid.Empty ? Guid.NewGuid() : gv.Id,
-                Name = gv.Name
-            }).ToList();
+                var genre = await _context.Genres.FirstOrDefaultAsync(g => g.Name == r, cancellationToken);
+                if (genre != null && genre.GameIds != null)
+                {
+                    genre.GameIds.Remove(game.Id);
+                    if (genre.GameIds.Count == 0)
+                        _context.Genres.Remove(genre);
+                    else
+                        _context.Genres.Update(genre);
+                }
+            }
+
+            // Add this game Id to new genres, creating genre entries when needed
+            foreach (var name in newGenreNames)
+            {
+                var genre = await _context.Genres.FirstOrDefaultAsync(g => g.Name == name, cancellationToken);
+                if (genre == null)
+                {
+                    genre = new Steam_TripleBrain.Models.Genre { Id = Guid.NewGuid(), Name = name, GameIds = new List<Guid> { game.Id } };
+                    await _context.Genres.AddAsync(genre, cancellationToken);
+                }
+                else
+                {
+                    genre.GameIds ??= new List<Guid>();
+                    if (!genre.GameIds.Contains(game.Id))
+                        genre.GameIds.Add(game.Id);
+                    _context.Genres.Update(genre);
+                }
+            }
+
             await _context.SaveChangesAsync(cancellationToken);
 
             var profile = GameMappingProfile.ToProfile(game);

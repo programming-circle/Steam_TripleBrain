@@ -76,39 +76,36 @@ namespace Steam_TripleBrain.CQRS.Handler.Game
             var game = GameMappingProfile.ToGame(request);
             game.Poster = posterPath;
             game.Images = galleryPaths;
-
-            // Attach existing genres by Id or Name instead of creating duplicates
+            // After new genre system: Game.Genres is a list of names. Persist any new Genre entries and update Genre.GameIds
             if (request.Genres != null && request.Genres.Count > 0)
             {
-                var genreEntities = new List<Models.Genre>();
-                foreach (var g in request.Genres)
+                var genreNames = request.Genres
+                    .Select(g => g.Name)
+                    .Where(n => !string.IsNullOrWhiteSpace(n))
+                    .Select(n => n!.Trim())
+                    .Distinct()
+                    .ToList();
+
+                game.Genres = genreNames;
+
+                foreach (var name in genreNames)
                 {
-                    Models.Genre? existingGenre = null;
-                    if (g.Id != Guid.Empty)
+                    var genre = await _context.Genres.FirstOrDefaultAsync(g => g.Name == name, cancellationToken);
+                    if (genre == null)
                     {
-                        existingGenre = await _context.Genres.FindAsync(new object[] { g.Id }, cancellationToken);
-                    }
-
-                    if (existingGenre == null && !string.IsNullOrWhiteSpace(g.Name))
-                    {
-                        existingGenre = await _context.Genres.FirstOrDefaultAsync(x => x.Name == g.Name, cancellationToken);
-                    }
-
-                    if (existingGenre != null)
-                    {
-                        genreEntities.Add(existingGenre);
+                        genre = new Models.Genre { Id = Guid.NewGuid(), Name = name, GameIds = new List<Guid> { game.Id } };
+                        await _context.Genres.AddAsync(genre, cancellationToken);
                     }
                     else
                     {
-                        var newGenre = new Models.Genre { Id = g.Id == Guid.Empty ? Guid.NewGuid() : g.Id, Name = g.Name };
-                        genreEntities.Add(newGenre);
-                        // Add new genre to context so it will be persisted together with the game
-                        await _context.Genres.AddAsync(newGenre, cancellationToken);
+                        genre.GameIds ??= new List<Guid>();
+                        if (!genre.GameIds.Contains(game.Id))
+                        {
+                            genre.GameIds.Add(game.Id);
+                        }
+                        _context.Genres.Update(genre);
                     }
                 }
-
-                // Remove duplicates by Id
-                game.Genres = genreEntities.GroupBy(x => x.Id).Select(x => x.First()).ToList();
             }
 
             await _context.Games.AddAsync(game, cancellationToken);

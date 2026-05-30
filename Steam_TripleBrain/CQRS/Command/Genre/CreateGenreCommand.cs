@@ -8,5 +8,6 @@ namespace Steam_TripleBrain.CQRS.Command.Genre
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
+        public List<Guid>? GameIds { get; set; }
     }
 }

@@ -21,11 +21,7 @@ namespace Steam_TripleBrain.MappingProfiles
                     Images = g.Images,
                     Rating = g.Rating,
                     Description = g.Description,
-                    Genres = g.Genres?.Select( i => new Genre
-                    {
-                        Id = i.Id == Guid.Empty ? Guid.NewGuid() : i.Id,
-                        Name = i.Name
-                    }).ToList(),
+                    Genres = g.Genres?.ToList(),
                     Price = g.Price,
                     Discount = g.Discount,
                     Developer = g.Developer,
@@ -49,11 +45,7 @@ namespace Steam_TripleBrain.MappingProfiles
                     Images = g.Images,
                     Rating = g.Rating,
                     Description = g.Description,
-                    Genres = g.Genres?.Select(i => new GenreViewProfile
-                    {
-                        Id = i.Id == Guid.Empty ? Guid.NewGuid() : i.Id,
-                        Name = i.Name
-                    }).ToList(),
+                    Genres = g.Genres?.ToList(),
                     Price = g.Price,
                     Discount = g.Discount,
                     Developer = g.Developer,

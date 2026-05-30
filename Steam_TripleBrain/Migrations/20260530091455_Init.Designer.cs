@@ -12,7 +12,7 @@ using Steam_TripleBrain.Data;
 namespace Steam_TripleBrain.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260529145121_Init")]
+    [Migration("20260530091455_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -240,6 +240,9 @@ namespace Steam_TripleBrain.Migrations
                     b.Property<int>("Discount")
                         .HasColumnType("int");
 
+                    b.PrimitiveCollection<string>("Genres")
+                        .HasColumnType("nvarchar(max)");
+
                     b.PrimitiveCollection<string>("Images")
                         .HasColumnType("nvarchar(max)");
 
@@ -282,16 +285,14 @@ namespace Steam_TripleBrain.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("GameId")
-                        .HasColumnType("uniqueidentifier");
+                    b.PrimitiveCollection<string>("GameIds")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("GameId");
 
                     b.ToTable("Genres");
                 });
@@ -558,14 +559,6 @@ namespace Steam_TripleBrain.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
-            modelBuilder.Entity("Steam_TripleBrain.Models.Genre", b =>
-                {
-                    b.HasOne("Steam_TripleBrain.Models.Game", null)
-                        .WithMany("Genres")
-                        .HasForeignKey("GameId")
-                        .OnDelete(DeleteBehavior.Restrict);
-                });
-
             modelBuilder.Entity("Steam_TripleBrain.Models.OrderItem", b =>
                 {
                     b.HasOne("Steam_TripleBrain.Models.Order", null)
@@ -606,11 +599,6 @@ namespace Steam_TripleBrain.Migrations
             modelBuilder.Entity("Steam_TripleBrain.Data.AppUser", b =>
                 {
                     b.Navigation("RefreshTokens");
-                });
-
-            modelBuilder.Entity("Steam_TripleBrain.Models.Game", b =>
-                {
-                    b.Navigation("Genres");
                 });
 
             modelBuilder.Entity("Steam_TripleBrain.Models.JwtToken", b =>

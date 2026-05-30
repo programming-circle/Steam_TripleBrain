@@ -51,6 +51,19 @@ namespace Steam_TripleBrain.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Genres",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    GameIds = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Genres", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "JwtTokens",
                 columns: table => new
                 {
@@ -307,6 +320,7 @@ namespace Steam_TripleBrain.Migrations
                     Images = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Rating = table.Column<double>(type: "float", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Genres = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Discount = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -329,25 +343,6 @@ namespace Steam_TripleBrain.Migrations
                         name: "FK_Games_WishLists_WishListId",
                         column: x => x.WishListId,
                         principalTable: "WishLists",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Genres",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    GameId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Genres", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Genres_Games_GameId",
-                        column: x => x.GameId,
-                        principalTable: "Games",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -402,11 +397,6 @@ namespace Steam_TripleBrain.Migrations
                 column: "WishListId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Genres_GameId",
-                table: "Genres",
-                column: "GameId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_OrderItems_OrderId",
                 table: "OrderItems",
                 column: "OrderId");
@@ -452,6 +442,9 @@ namespace Steam_TripleBrain.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Games");
+
+            migrationBuilder.DropTable(
                 name: "Genres");
 
             migrationBuilder.DropTable(
@@ -470,7 +463,7 @@ namespace Steam_TripleBrain.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Games");
+                name: "WishLists");
 
             migrationBuilder.DropTable(
                 name: "Orders");
@@ -483,9 +476,6 @@ namespace Steam_TripleBrain.Migrations
 
             migrationBuilder.DropTable(
                 name: "Users");
-
-            migrationBuilder.DropTable(
-                name: "WishLists");
         }
     }
 }

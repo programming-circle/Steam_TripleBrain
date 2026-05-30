@@ -25,7 +25,6 @@ namespace Steam_TripleBrain.CQRS.Handler.WishList
 
             var wishlist = await _context.WishLists
                 .Include(w => w.WishGames)
-                    .ThenInclude(g => g.Genres)
                 .FirstOrDefaultAsync(w => w.Id == request.Id && w.UserId == request.UserId, cancellationToken);
 
             if (wishlist == null)
@@ -42,11 +41,7 @@ namespace Steam_TripleBrain.CQRS.Handler.WishList
                 Images = g.Images,
                 Rating = g.Rating,
                 Description = g.Description,
-                Genres = g.Genres?.Select(i => new Models.Genre
-                {
-                    Id = i.Id,
-                    Name = i.Name,
-                }).ToList(),
+                Genres = g.Genres?.ToList(),
                 Price = g.Price,
                 Discount = g.Discount,
                 Developer = g.Developer,

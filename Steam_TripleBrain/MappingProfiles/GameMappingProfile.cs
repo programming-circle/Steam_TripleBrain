@@ -26,12 +26,8 @@ namespace Steam_TripleBrain.MappingProfiles
                 Images = game.Images == null ? null : game.Images,
                 Rating = game.Rating,
                 Description = game.Description,
-                // Genres: already domain types in the command, just make a defensive copy
-                Genres = game.Genres?.Select(i => new Genre
-                {
-                    Id = i.Id == Guid.Empty ? Guid.NewGuid() : i.Id,
-                    Name = i.Name
-                }).ToList(),
+                // Genres: now stored as list of names on Game
+                Genres = game.Genres?.Select(i => i.Name).ToList(),
                 // Tags: convert to a list
                 /*Tags = game.Tags?.Select(i => new Tag
                 {
@@ -102,12 +98,8 @@ namespace Steam_TripleBrain.MappingProfiles
                 Images = game.Images == null ? null : game.Images,
                 Rating = game.Rating,
                 Description = game.Description,
-                // Genres: already domain types in the command, just make a defensive copy
-                Genres = game.Genres?.Select(i => new GenreViewProfile
-                {
-                    Id = i.Id == Guid.Empty ? Guid.NewGuid() : i.Id,
-                    Name = i.Name
-                }).ToList(),
+                // Genres: Game stores list of names now
+                Genres = game.Genres?.ToList(),
                 // Tags: convert to a list
                 /*
                 Tags = game.Tags?.Select(i => new TagViewProfile

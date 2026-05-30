@@ -13,7 +13,7 @@
         public double Rating { get; set; } // Possibly i gonna add system relating on ratings from Reviews.
 
         public string? Description { get; set; }
-        public List<Genre>? Genres { get; set; }
+        public List<string>? Genres { get; set; }
 
         //public List<Tag>? Tags { get; set; }
 

@@ -90,11 +90,8 @@ namespace Steam_TripleBrain.Data
                 //      .HasForeignKey("GameId")
                 //      .OnDelete(DeleteBehavior.Restrict);
 
-                // Genres: Game -> Genre (one-to-many)
-                entity.HasMany(g => g.Genres)
-                      .WithOne()
-                      .HasForeignKey("GameId")
-                      .OnDelete(DeleteBehavior.Restrict);
+                // Genres: now stored as simple list of names on Game, no EF relationship
+                // Game.Genres is List<string> and is stored as a JSON/primitive collection; no navigation configured here.
 
                 // Tags: Game -> Tag (one-to-many)
                 /*
@@ -128,10 +125,7 @@ namespace Steam_TripleBrain.Data
             modelBuilder.Entity<Genre>(entity =>
             {
                 entity.HasKey(x => x.Id);
-                entity.HasOne<Game>()
-                      .WithMany(g => g.Genres)
-                      .HasForeignKey("GameId")
-                      .OnDelete(DeleteBehavior.Restrict);
+                // Genre.GameIds is a list of Guids stored on Genre; no direct EF relationship to Game entity is configured here.
             });
 
             // Tag entity configuration

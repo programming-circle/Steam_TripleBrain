@@ -51,7 +51,6 @@ namespace Steam_TripleBrain.Controllers
 
             var wishList = await _context.WishLists
                 .Include(w => w.WishGames)
-                    .ThenInclude(g => g.Genres)
                 .FirstOrDefaultAsync(w => w.UserId == parsedUserId);
 
             if (wishList == null)

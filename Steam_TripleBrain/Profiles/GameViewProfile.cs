@@ -14,7 +14,7 @@ namespace Steam_TripleBrain.Profiles
         public double Rating { get; set; }
 
         public string Description { get; set; }
-        public List<GenreViewProfile> Genres { get; set; }
+        public List<string>? Genres { get; set; }
 
         //public List<TagViewProfile>? Tags { get; set; }
 

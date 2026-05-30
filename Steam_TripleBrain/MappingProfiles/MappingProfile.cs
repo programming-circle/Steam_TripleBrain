@@ -137,7 +137,7 @@ namespace Steam_TripleBrain.MappingProfiles
                 Icon = user.Icon == null ? null : new ImageUrlViewProfile { Id = user.Icon.Id, Url = user.Icon.Url },
                 CreatedAt = user.CreatedAt,
                 PurchasedGames = user.PurchasedGames ?? new List<Game>(),
-                DLCs = user.DLCs ?? new List<DLC>()
+                DLCs = user.DLCs ?? new List<DLC>(), // placeholder
             };
         }
 

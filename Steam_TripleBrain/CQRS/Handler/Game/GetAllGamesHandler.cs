@@ -28,7 +28,8 @@ namespace Steam_TripleBrain.CQRS.Handler.Game
             IQueryable<Models.Game> query = _context.Games.AsNoTracking()
                 //.Include(g => g.Poster) <------ Poster is a string, so no need to include it as a navigation property
                 //.Include(g => g.Images) <------ Images is a List<string>, so no need to include it as a navigation property
-                .Include(g => g.Genres);
+                //.Include(g => g.Genres)
+                .Where(g => !g.IsDLC);
                 //.Include(g => g.Tags)
                 //.Include(g => g.DLCs);
 
@@ -96,12 +97,22 @@ namespace Steam_TripleBrain.CQRS.Handler.Game
             var pageNum = request.Page < 1 ? 1 : request.Page;
             var pageSizeReq = request.PageSize < 1 ? 10 : request.PageSize;
 
-            var itemsFull = await query.Skip((pageNum - 1) * pageSizeReq)
+            var itemsFull = await query
+                .Skip((pageNum - 1) * pageSizeReq)
                 .Take(pageSizeReq)
+                .Select(g => new GameViewProfile
+                {
+                    Id = g.Id,
+                    Name = g.Name,
+                    Rating = g.Rating,
+                    Price = g.Price,
+                    Discount = g.Discount,
+                    Poster = g.Poster,
+                    Genres = g.Genres
+                })
                 .ToListAsync(cancellationToken);
 
-            var profiles = itemsFull.Select(GameMappingProfile.ToProfile).ToList();
-            return Result<List<GameViewProfile>>.Success(profiles, "Ok");
+            return Result<List<GameViewProfile>>.Success(itemsFull, "Ok");
         }
     }
 }

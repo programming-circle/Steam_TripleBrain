@@ -20,7 +20,8 @@ namespace Steam_TripleBrain.MappingProfiles
             return new Genre
             {
                 Id = cmd.Id == Guid.Empty ? Guid.NewGuid() : cmd.Id,
-                Name = cmd.Name
+                Name = cmd.Name,
+                GameIds = cmd.GameIds
             };
         }
 
@@ -29,7 +30,8 @@ namespace Steam_TripleBrain.MappingProfiles
             return new GenreViewProfile
             {
                 Id = genre.Id == Guid.Empty ? Guid.NewGuid() : genre.Id,
-                Name = genre.Name
+                Name = genre.Name,
+                GameIds = genre.GameIds
             };
         }
     }

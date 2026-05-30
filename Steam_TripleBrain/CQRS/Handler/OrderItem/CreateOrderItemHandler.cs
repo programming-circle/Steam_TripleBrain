@@ -39,6 +39,32 @@ namespace Steam_TripleBrain.CQRS.Handler.OrderItem
             var orderItem = OrderItemMappingProfile.ToOrderItem(request);
 
             await _context.AddAsync(orderItem);
+
+            var order = await _context.Orders
+                .Include(o => o.Items)
+                .FirstOrDefaultAsync(o => o.Id == request.OrderId, cancellationToken);
+
+            if (order != null)
+            {
+                var user = await _context.Users
+                    .Include(u => u.PurchasedGames)
+                    .FirstOrDefaultAsync(u => u.Id == order.UserId, cancellationToken);
+
+                if (user != null && request.GameId.HasValue)
+                {
+                    var game = await _context.Games.FindAsync(new object?[] { request.GameId.Value }, cancellationToken);
+                    if (game != null)
+                    {
+                        user.PurchasedGames ??= new List<Models.Game>();
+                        var alreadyPurchased = user.PurchasedGames.Any(g => g.Id == request.GameId.Value);
+                        if (!alreadyPurchased)
+                        {
+                            user.PurchasedGames.Add(game);
+                        }
+                    }
+                }
+            }
+
             await _context.SaveChangesAsync(cancellationToken);
 
             var orderItemProfile = OrderItemMappingProfile.ToProfile(orderItem);
